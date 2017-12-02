@@ -16,6 +16,7 @@ cache:
     - node_modules
 
 deploy:
+  skip_cleanup: true
   provider: firebase
   token:
     secure: $FIREBASE_TOKEN
