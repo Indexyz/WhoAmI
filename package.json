@@ -8,7 +8,8 @@
   "scripts": {
     "assets": "gulp merge",
     "start": "hexo server",
-    "init": "gulp"
+    "init": "gulp",
+    "build": "hexo g"
   },
   "dependencies": {
     "hexo": "^3.2.0",
