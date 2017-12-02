@@ -9,7 +9,6 @@ install:
 script:
   - npm run init
   - npm run build
-  - cd public
 
 cache:
   directories:
