@@ -1,0 +1,20 @@
+language: node_js
+dist: trusty
+node_js:
+  - "9"
+install:
+  - yarn
+  - npm install -g hexo
+
+script:
+  - npm run init
+  - cd public
+
+cache:
+  directories:
+    - node_modules
+
+deploy:
+  provider: firebase
+  token:
+    secure: $FIREBASE_TOKEN
