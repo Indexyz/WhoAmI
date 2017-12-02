@@ -1,6 +1,6 @@
 {
     "hosting": {
-        "public": "/home/travis/build/Indexyz/WhoAmI/public",
+        "public": "public",
         "ignore": []
     }
 }
