@@ -42,6 +42,7 @@ cd /data
 我们需要安装 `MySQL` 作为数据库存储信息
 使用 `Docker` 运行数据库只需要
 > 我们假定数据库密码为 pa44w@rd
+
 ```bash
 # 如果想只使用 Web API 进行链接 可以取消掉 -p 那一段
 docker run --name panel-database \
