@@ -30,7 +30,9 @@ gulp.task('rename dir', [ 'clean up' ], (cb) => {
     })
 })
 
-gulp.task('merge', done => {
+gulp.task('merge', 
+    [ 'rename dir' ] , // add annotation to disable 
+    done => {
     const mergeDir = (source, dest) => {
         const files = fs.readdirSync(source)
         for (const file of files) {
@@ -49,6 +51,7 @@ gulp.task('merge', done => {
         }
     } 
     mergeDir('./merge/', './themes/material/')
+    done()
 })
 
-gulp.task('default', [ 'rename dir', 'merge' ])
+gulp.task('default', [ 'merge' ])
