@@ -8,7 +8,7 @@ categories:
     - Linux
 date: 2017-10-28 08:18:21
 updated: 2017-10-28 15:29:18
-thumbnail: /img/thumbnail/grafana.png
+thumbnail: https://img.indexyz.me/images/2017/12/10/grafana.png
 ---
 最近一直想搞个监控系统来检测下大陆到国外的延时什么的, 但是 `SmokePing` 的图表太玄学了 而且界面像是上个世纪的 所以想坑一下计划了很久的 `Grafana`.
 
@@ -110,6 +110,7 @@ docker restart {container_id}
 将这里的 `enable` 改为 `true` 打开 `collectd` 收集
 同时将 `database` 改为要收集到的数据库 根据上下文应该为 `collectdb`
 > 注意 25826/udp 是可以绕过账户保护的 请对这个端口使用防火墙什么的
+
 修改完成后重启 `influxdb` 接下来要修改 `collectd` 配置文件了
 ### Collectd 部分
 `collectd` 的配置文件在 `/etc/collectd.conf`
@@ -165,20 +166,20 @@ docker run \
 ```
 访问 `http://localhost:3000` 就可以看到面板了
 默认账号和密码都是 `admin` 请及时修改
-![20171028231218](/content/images/2017/10/20171028231218.png)
+![Grafana Index](https://img.indexyz.me/images/2017/12/12/Grafana-Index.png)
 
 ## 数据源
 点击 `Getting Started` 中的 `Add data source` 我们来添加 `influxdb` 作为数据源
 按照下图设置数据源 然后点击 `Add` 按钮 如果可以链接就代表成功了
-![20171028231340](/content/images/2017/10/20171028231340.png)
+![Grafana Data Source](https://img.indexyz.me/images/2017/12/12/Grafana-Data-Source.png)
 
 ## 创建图表
 `Create Dashboard` 然后选 `Graph`
 然后点击 `Panel Title` 在弹出的选项中点击 `Edit` 然后就可以添加查询了
 一个查询可能长这样
-![20171028232224](/content/images/2017/10/20171028232224.png)
+![Grafana Add Query](https://img.indexyz.me/images/2017/12/12/Grafana-Add-Query.png)
 
 # 成果
 最后多添加几个查询 然后改下 `Title` 什么的 一个监控面板就出来了
-![232400](/content/images/2017/10/232400.png)
+![Grafana Dashboard](https://img.indexyz.me/images/2017/12/12/Grafana-Dashboard.png)
 当然这里没有细讲各个组件的高级应用 自己慢慢玩吧(

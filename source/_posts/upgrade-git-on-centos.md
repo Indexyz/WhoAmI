@@ -7,7 +7,7 @@ categories:
     - Linux
 date: 2017-08-09 17:53:01
 updated: 2017-09-01 18:18:17
-thumbnail: /img/thumbnail/git.png
+thumbnail: https://img.indexyz.me/images/2017/12/10/git.png
 ---
 最近在玩ss-panel, 在编译Go版本的ss的时候出现编译一直卡死的情况
 查找资料后发现是Git的版本太低了(Git要高于1.7.1)

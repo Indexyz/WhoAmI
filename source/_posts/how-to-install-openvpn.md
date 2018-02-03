@@ -8,7 +8,7 @@ categories:
     - Linux
 date: 2017-08-09 17:57:17
 updated: 2017-09-01 18:17:42
-thumbnail: /img/thumbnail/openvpn.png
+thumbnail: https://img.indexyz.me/images/2017/12/10/openvpn.png
 ---
 > OpenVPN是一个用于创建虚拟专用网络加密通道的软件包，最早由James Yonan编写。OpenVPN允许创建的VPN使用公开密钥、电子证书、或者用户名／密码来进行身份验证。
 [Wikipedia](https://zh.wikipedia.org/wiki/OpenVPN)

@@ -7,7 +7,7 @@ categories:
     - Linux
 date: 2017-08-09 18:20:33
 updated: 2017-09-01 18:13:30
-thumbnail: /img/thumbnail/rancher.png
+thumbnail: https://img.indexyz.me/images/2017/12/10/rancher.png
 ---
 > Rancher is an open source project that provides a complete platform for 
 operating Docker in production. It provides infrastructure services such as 

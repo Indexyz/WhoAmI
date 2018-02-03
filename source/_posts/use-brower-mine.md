@@ -7,7 +7,7 @@ categories:
     - ICO
 date: 2017-10-03 07:23:17
 updated: 2017-10-03 10:00:43
-thumbnail: /img/thumbnail/bitcoin.png
+thumbnail: https://img.indexyz.me/images/2017/12/10/bitcoin.png
 ---
 最近这玩意好像很火的样子
 

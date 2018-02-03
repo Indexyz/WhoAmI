@@ -78,3 +78,16 @@ theme: material
 ## Docs: https://hexo.io/docs/deployment.html
 deploy:
   type:
+
+search:
+  path: search.xml
+  field: all
+
+feed:
+  type: atom
+  path: atom.xml
+  limit: 40
+  hub:
+ 
+sitemap:
+  path: sitemap.xml

@@ -7,7 +7,7 @@ categories:
     - Linux
 date: 2017-08-09 18:09:02
 updated: 2017-09-01 18:15:21
-thumbnail: /img/thumbnail/hypersh.png
+thumbnail: https://img.indexyz.me/images/2017/12/10/hypersh.png
 ---
 > Hyper_是世界上第一家 Container-native 的 Docker 云服务. 
 它的核心是底层的HyperContainer虚拟化容器技术, 以及Hypernetes多租户的 Kubernetes 

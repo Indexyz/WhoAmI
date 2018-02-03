@@ -4,9 +4,9 @@
 
 # Head info
 head:
-    favicon: "/img/avatar.png"
-    high_res_favicon: "/img/avatar.png"
-    apple_touch_icon: "/img/avatar.png"
+    favicon: "https://img.indexyz.me/images/2017/12/10/avatar.png"
+    high_res_favicon: "https://img.indexyz.me/images/2017/12/10/avatar.png"
+    apple_touch_icon: "https://img.indexyz.me/images/2017/12/10/avatar.png"
     keywords:
     site_verification:
         google:
@@ -63,17 +63,17 @@ thumbnail:
 #        type available value: A (animal), C (culture), N (nature), S (space), T (travel)
 background:
     # purecolor: "#F5F5F5"
-    bgimg: "/img/bg.jpg"
+    bgimg: "https://img.indexyz.me/images/2017/12/10/bg.jpg"
     bing:
         enable: false
     #     parameter: type=N
 
 # Images Settings
 img:
-    logo: "/img/avatar.png"
-    avatar: "/img/avatar.png"
-    daily_pic: "/img/daily_pic.png"
-    sidebar_header: "/img/sidebar_header.jpg"
+    logo: "https://img.indexyz.me/images/2017/12/10/avatar.png"
+    avatar: "https://img.indexyz.me/images/2017/12/10/avatar.png"
+    daily_pic: "https://img.indexyz.me/images/2017/12/10/daily_pic.png"
+    sidebar_header: "https://img.indexyz.me/images/2017/12/10/sidebar_header.jpg"
     random_thumbnail: "/img/random/material-"
     footer_image:
         #upyun_logo:
@@ -200,10 +200,10 @@ sidebar:
         icon: chrome_reader_mode
         divider: false
     pages:
-        #About:
-            #link: "/about"
-            #icon: person
-            #divider: false
+        友链:
+            link: "/links.html"
+            icon: people
+            divider: true
     article_num:
         use: true
         divider: false
@@ -225,8 +225,8 @@ sidebar:
 # If you want to use gitment or gitalk,you should get the client_id and client_secret form https://github.com/settings/applications/new
 # If you want to use valine,you should get the app_id and app_key form https://leancloud.cn ,more setting please see https://valine.js.org
 comment:
-    use: 
-    shortname: # duoshuo or disqus shortname
+    use: disqus
+    shortname: indexyz-blog # duoshuo or disqus shortname
     changyan_appid:
     changyan_conf:
     changyan_thread_key_type: path
@@ -260,7 +260,7 @@ search:
 # Available value:
 #     baidu | google | cnzz
 analytics:
-    google_site_id:
+    google_site_id: UA-97074604-1
     baidu_site_id:
     cnzz_site_id:
 

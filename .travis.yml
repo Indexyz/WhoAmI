@@ -9,15 +9,16 @@ install:
 script:
   - npm run init
   - npm run build
-  - ls
+
 
 cache:
   directories:
     - node_modules
 
-deploy:
-  skip_cleanup: true
-  provider: firebase
-  token:
-    secure: $FIREBASE_TOKEN
-  project: indexyz-ini
+after_success:
+  - cd public
+  - git init
+  - git add -A
+  - git commit -m "Delopy commit by Travis CI"
+  - git remote add deploy $DEPLOY_REPO_URL
+  - git push deploy master -f

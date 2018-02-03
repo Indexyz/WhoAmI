@@ -6,7 +6,7 @@ categories:
     - Linux
 date: 2017-08-09 18:06:32
 updated: 2017-09-01 18:15:38
-thumbnail: /img/thumbnail/redhat.png
+thumbnail: https://img.indexyz.me/images/2017/12/10/redhat.png
 ---
 很多主机商的VPS中, 
 在安装完系统之后所给的硬盘大小并不是标注的硬盘大小(而且不同系统有时候大小还不一样). 
