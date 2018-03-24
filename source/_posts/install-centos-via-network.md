@@ -9,17 +9,17 @@ date: 2018-03-24 23:21:11
 updated: 2018-03-24 23:21:11
 thumbnail: https://img.indexyz.me/images/2018/03/24/centos-logo.png
 ---
-# 网络重装 CentOS
-
 `Debian` 系的系统的网络重装脚本已经很多了 比如 [这个脚本](https://moeclub.org/2017/03/25/82/)
 
 但是 `RedHat` 系列的系统却机没有网络安装脚本, 当需要调整分区或者是安装一个纯净的系统的时候就遇到了困难
 
 但是 `RedHat` 系的系统也是可以从网络重装的 下面就介绍一种网络重装的方法
 
+<!-- more -->
+
 本文主体部分主要是重装 CentOS 6, 会在最后列出重装 `CentOS 7` 和 `CentOS 6` 的区别 
 
-## CentOS 6 (GRUB 1)
+# CentOS 6 (GRUB 1)
 
 首先 先获取机器的 IP地址，网关地址以及子网掩码
 
@@ -51,7 +51,7 @@ title net
 
 然后重启就可以通过 `IP地址:1` 的端口来连接到 VNC 进行全新安装模式了
 
-## CentOS 7 (GRUB2)
+# CentOS 7 (GRUB2)
 
 首先 先获取机器的 IP地址，网关地址以及子网掩码
 
@@ -113,9 +113,9 @@ grub2-reboot net
 
 然后重启就可以通过 `IP地址:1` 的端口来连接到 VNC 进行全新安装模式了
 
-## 常见问题
+# 常见问题
 
-### 我在修改 grub 的时候该怎么填 `initrd.img` 和 `vmlinuz` 的地址
+## 我在修改 grub 的时候该怎么填 `initrd.img` 和 `vmlinuz` 的地址
 
 首先 查看是否有挂载在 `/boot` 下的分区
 
@@ -125,7 +125,7 @@ df -h | grep /boot
 
  如果有返回则代表应该直接以 `/initrd.img` 开头 如果没有的话以 `/boot/initrd.img` 开头
 
-### CentOS 7 和 CentOS 6 在写参数时的不同
+## CentOS 7 和 CentOS 6 在写参数时的不同
 
 CentOS 7 的 格式如下
 
@@ -139,7 +139,7 @@ CentOS 7 的 格式如下
 /boot/vmlinuz vnc vncpassword=12345678 headless ip=IPADDRES netmask=NETMASK gateway=GATEWAY dns=8.8.8.8 ksdevice=eth0 method=http://mirror.centos.org/centos/6/os/x86_64/ lang=en_US keymap=us
 ```
 
-### VNC 的默认密码是啥 如何修改
+## VNC 的默认密码是啥 如何修改
 
 `vnc` 的密码是在 `vmlinuz` 那段定义的 在上面的几段配置文件中都为 `12345678`
 
