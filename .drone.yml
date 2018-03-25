@@ -14,5 +14,7 @@ pipeline:
   deploy:
     image: appleboy/drone-git-push
     branch: gh-pages
+    remote_name: origin
     force: true
     commit: true
+    path: public
