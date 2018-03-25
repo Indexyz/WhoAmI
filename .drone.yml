@@ -1,0 +1,18 @@
+workspace:
+  base: /src
+  path: blog
+  
+pipeline:
+  build:
+    image: node:9.9.0
+    commands:
+      - npm install -g hexo
+      - npm install
+      - npm run init
+      - npm run build
+      
+  deploy:
+    image: appleboy/drone-git-push
+    branch: gh-pages
+    force: true
+    commit: true
