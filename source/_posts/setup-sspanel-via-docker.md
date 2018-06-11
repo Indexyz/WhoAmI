@@ -48,7 +48,7 @@ cd /data
 docker run --name panel-database \
     --restart=always -p 3306:3306 \
     -e MYSQL_ROOT_PASSWORD=pa44w@rd -d \
-    mysql
+    mysql:5.7.22
 ```
 ## 安装 PHPMyAdmin
 `PHPMyAdmin` 是一个方便的 MySQL数据库 管理工具
