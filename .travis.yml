@@ -9,16 +9,19 @@ install:
 script:
   - npm run init
   - npm run build
-
+  - echo "blog.indexyz.me" > public/CNAME
 
 cache:
   directories:
     - node_modules
 
-after_success:
-  - cd public
-  - git init
-  - git add -A
-  - git commit -m "Delopy commit by Travis CI"
-  - git remote add deploy $DEPLOY_REPO_URL
-  - git push deploy master -f
+deploy:
+  provider: pages
+  skip_cleanup: true
+  github_token: $GITHUB_TOKEN
+  target_branch: gh-pages
+  email: indexyz@protonmail.com
+  local-dir: public
+  name: Travis Automatically Bot
+  on:
+    branch: master
