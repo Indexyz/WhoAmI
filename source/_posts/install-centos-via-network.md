@@ -7,7 +7,7 @@ categories:
     - Linux
 date: 2018-03-24 23:21:11
 updated: 2018-03-24 23:21:11
-thumbnail: https://img.indexyz.me/images/2018/03/24/centos-logo.png
+thumbnail: https://publish.indexyz.me/images/2018/03/24/centos-logo.png
 ---
 `Debian` 系的系统的网络重装脚本已经很多了 比如 [这个脚本](https://moeclub.org/2017/03/25/82/)
 

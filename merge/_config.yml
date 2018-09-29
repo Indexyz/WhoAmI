@@ -4,9 +4,9 @@
 
 # Head info
 head:
-    favicon: "https://img.indexyz.me/images/2017/12/10/avatar.png"
-    high_res_favicon: "https://img.indexyz.me/images/2017/12/10/avatar.png"
-    apple_touch_icon: "https://img.indexyz.me/images/2017/12/10/avatar.png"
+    favicon: "https://publish.indexyz.me/images/2017/12/10/avatar.png"
+    high_res_favicon: "https://publish.indexyz.me/images/2017/12/10/avatar.png"
+    apple_touch_icon: "https://publish.indexyz.me/images/2017/12/10/avatar.png"
     keywords:
     site_verification:
         google:
@@ -63,17 +63,17 @@ thumbnail:
 #        type available value: A (animal), C (culture), N (nature), S (space), T (travel)
 background:
     # purecolor: "#F5F5F5"
-    bgimg: "https://img.indexyz.me/images/2017/12/10/bg.jpg"
+    bgimg: "https://publish.indexyz.me/images/2017/12/10/bg.jpg"
     bing:
         enable: false
     #     parameter: type=N
 
 # Images Settings
 img:
-    logo: "https://img.indexyz.me/images/2017/12/10/avatar.png"
-    avatar: "https://img.indexyz.me/images/2017/12/10/avatar.png"
-    daily_pic: "https://img.indexyz.me/images/2017/12/10/daily_pic.png"
-    sidebar_header: "https://img.indexyz.me/images/2017/12/10/sidebar_header.jpg"
+    logo: "https://publish.indexyz.me/images/2017/12/10/avatar.png"
+    avatar: "https://publish.indexyz.me/images/2017/12/10/avatar.png"
+    daily_pic: "https://publish.indexyz.me/images/2017/12/10/daily_pic.png"
+    sidebar_header: "https://publish.indexyz.me/images/2017/12/10/sidebar_header.jpg"
     random_thumbnail: "/img/random/material-"
     footer_image:
         #upyun_logo:

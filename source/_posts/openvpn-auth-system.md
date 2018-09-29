@@ -9,7 +9,7 @@ categories:
     - Linux
 date: 2017-08-09 17:58:46
 updated: 2017-09-01 18:17:11
-thumbnail: https://img.indexyz.me/images/2017/12/10/openvpn.png
+thumbnail: https://publish.indexyz.me/images/2017/12/10/openvpn.png
 ---
 > 最近在研究OpenVPN 
  然后想把自己的Evplex和ss-panel接入OpenVPN认证，于是就开始研究了

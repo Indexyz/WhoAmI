@@ -7,7 +7,7 @@ categories:
     - Docker
 date: 2017-12-26 15:43:08
 updated: 2017-12-26 23:23:27
-thumbnail: https://img.indexyz.me/images/2017/12/10/paperplane.png
+thumbnail: https://publish.indexyz.me/images/2017/12/10/paperplane.png
 ---
 `ss-panel-v3-mod` 是一个美观 功能强大的代理管理面板 但是依赖什么的对新手简直是爆炸 装个 `lnmp` 都要一个小时左右 现在使用 `Docker` 可以快速的完成面板的搭建
 
@@ -120,5 +120,5 @@ docker exec -it panel bash
 # 然后提供邮箱什么的信息 就创建完成了
 ```
 
-[CREATE_DATABASE]: https://img.indexyz.me/images/2017/12/12/phpMyAdmin-CreateDatabase.png
+[CREATE_DATABASE]: https://publish.indexyz.me/images/2017/12/12/phpMyAdmin-CreateDatabase.png
 [SQL_FILE]: https://github.com/esdeathlove/ss-panel-v3-mod/raw/new_master/sql/glzjin_all.sql

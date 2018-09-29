@@ -6,7 +6,7 @@ categories:
     - Telegram
 date: 2017-08-09 18:27:39
 updated: 2017-09-01 18:12:31
-thumbnail: https://img.indexyz.me/images/2017/12/10/telegram.png
+thumbnail: https://publish.indexyz.me/images/2017/12/10/telegram.png
 ---
 > 近几日迷上了使用 `Telegram` 把我的RSS订阅什么的都移到Telegram上去了, 然而最近网购了一波发现快递查询也是个很烦人的事情 于是就写了个这个Bot
 

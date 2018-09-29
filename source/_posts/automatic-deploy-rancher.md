@@ -56,4 +56,4 @@ http(s)://url-of-updater/webhook/gitlab/{prject-id}/{service-id}
 然后 在每次构建成功的时候就会自带推送了!
 
 
-[gitlab integations]: https://img.indexyz.me/images/2018/02/04/gitlab-integations.png
+[gitlab integations]: https://publish.indexyz.me/images/2018/02/04/gitlab-integations.png
