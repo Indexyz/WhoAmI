@@ -40,5 +40,5 @@ thumbnail: https://publish.indexyz.me/images/2017/12/10/left4dead2.png
 2.查找你所需要的mod.
 3.进入mod页面, 点击订阅, 打开游戏便会自动下载安装
 
-  [1]: https://o3xwvu85n.qnssl.com/2016/06/1455334116.png?imageView2/2/w/500
-  [2]: https://o3xwvu85n.qnssl.com/2016/06/1507364620.png?imageView2/2/w/500
+  [1]: https://publish.indexyz.me/images/2016/06/1455334116.png?imageView2/2/w/500
+  [2]: https://publish.indexyz.me/images/2016/06/1507364620.png?imageView2/2/w/500

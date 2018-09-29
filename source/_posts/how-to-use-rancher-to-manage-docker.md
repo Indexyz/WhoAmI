@@ -118,10 +118,10 @@ server {
 > 因为Rancher使用了Webshock 所以和正常的反代方式有些不同
 
 
-  [1]: https://o3xwvu85n.qnssl.com/2017/01/3269573140.png
-  [2]: https://o3xwvu85n.qnssl.com/2017/01/3952703091.png
-  [3]: https://o3xwvu85n.qnssl.com/2017/01/4151018919.png
-  [4]: https://o3xwvu85n.qnssl.com/2017/01/4219189877.png
-  [5]: https://o3xwvu85n.qnssl.com/2017/01/3018941036.png
-  [6]: https://o3xwvu85n.qnssl.com/2017/01/1644447780.png
-  [7]: https://o3xwvu85n.qnssl.com/2017/01/3126909881.png
+  [1]: https://publish.indexyz.me/images/2017/01/3269573140.png
+  [2]: https://publish.indexyz.me/images/2017/01/3952703091.png
+  [3]: https://publish.indexyz.me/images/2017/01/4151018919.png
+  [4]: https://publish.indexyz.me/images/2017/01/4219189877.png
+  [5]: https://publish.indexyz.me/images/2017/01/3018941036.png
+  [6]: https://publish.indexyz.me/images/2017/01/1644447780.png
+  [7]: https://publish.indexyz.me/images/2017/01/3126909881.png

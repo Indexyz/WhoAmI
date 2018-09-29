@@ -43,4 +43,4 @@ Connected.
 ![速度截图][1]
 
 
-  [1]: https://o3xwvu85n.qnssl.com/2016/05/2418556794.png
+  [1]: https://publish.indexyz.me/images/2016/05/2418556794.png

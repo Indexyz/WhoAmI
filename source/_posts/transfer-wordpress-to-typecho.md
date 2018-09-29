@@ -20,4 +20,4 @@ for item in xrange(100):
     print "Hello,World!"
 ```
 
-  [1]: https://o3xwvu85n.qnssl.com/2016/03/3756851667.jpg
+  [1]: https://publish.indexyz.me/images/2016/03/3756851667.jpg

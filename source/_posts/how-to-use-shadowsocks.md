@@ -104,19 +104,19 @@ ShadowSocks自带了从GFW List获取PAC的方法
   [2]: https://github.com/shadowsocks/shadowsocks-windows/
   [3]: https://github.com/shadowsocks/shadowsocks-android
   [4]: https://github.com/shadowsocks/shadowsocks-iOS
-  [5]: https://o3xwvu85n.qnssl.com/2016/05/3648777761.png
-  [6]: https://o3xwvu85n.qnssl.com/2016/05/3417398088.png
-  [7]: https://o3xwvu85n.qnssl.com/2016/05/2121727418.png
-  [8]: https://o3xwvu85n.qnssl.com/2016/05/3908564421.png
-  [9]: https://o3xwvu85n.qnssl.com/2016/05/4276940742.png
+  [5]: https://publish.indexyz.me/images/2016/05/3648777761.png
+  [6]: https://publish.indexyz.me/images/2016/05/3417398088.png
+  [7]: https://publish.indexyz.me/images/2016/05/2121727418.png
+  [8]: https://publish.indexyz.me/images/2016/05/3908564421.png
+  [9]: https://publish.indexyz.me/images/2016/05/4276940742.png
   [10]: https://chrome.google.com/webstore/detail/proxy-switchyomega/padekgcemlokbadohgkifijomclgjgif?hl=zh-CN
   [11]: https://github.com/FelisCatus/SwitchyOmega
-  [12]: https://o3xwvu85n.qnssl.com/2016/05/2218849068.png
-  [13]: https://o3xwvu85n.qnssl.com/2016/05/1619808061.png
-  [14]: https://o3xwvu85n.qnssl.com/2016/05/2403373922.png
-  [15]: https://o3xwvu85n.qnssl.com/2016/05/2696533201.png
+  [12]: https://publish.indexyz.me/images/2016/05/2218849068.png
+  [13]: https://publish.indexyz.me/images/2016/05/1619808061.png
+  [14]: https://publish.indexyz.me/images/2016/05/2403373922.png
+  [15]: https://publish.indexyz.me/images/2016/05/2696533201.png
   [16]: https://addons.mozilla.org/zh-CN/firefox/addon/autoproxy/
-  [17]: https://o3xwvu85n.qnssl.com/2016/05/1376335465.png
-  [18]: https://o3xwvu85n.qnssl.com/2016/05/1196130009.png
-  [19]: https://o3xwvu85n.qnssl.com/2016/05/3351527960.png
-  [20]: https://o3xwvu85n.qnssl.com/2016/05/772997332.png
+  [17]: https://publish.indexyz.me/images/2016/05/1376335465.png
+  [18]: https://publish.indexyz.me/images/2016/05/1196130009.png
+  [19]: https://publish.indexyz.me/images/2016/05/3351527960.png
+  [20]: https://publish.indexyz.me/images/2016/05/772997332.png

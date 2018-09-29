@@ -23,9 +23,9 @@ thumbnail: https://publish.indexyz.me/images/2017/12/10/openvpn.png
 如果你的服务商没有提供配置文件,请自行参考百度进行配置文件的编写
 ###通过菜单导入配置文件
 导入 > 从SD卡导入来进行导入
-![Screenshot_20160617-211458.png](https://o3xwvu85n.qnssl.com/2016/06/2384172290.png?imageView2/2/w/300)
+![Screenshot_20160617-211458.png](https://publish.indexyz.me/images/2016/06/2384172290.png?imageView2/2/w/300)
 
-![Screenshot_20160617-211500.png](https://o3xwvu85n.qnssl.com/2016/06/4214865866.png?imageView2/2/w/300)
+![Screenshot_20160617-211500.png](https://publish.indexyz.me/images/2016/06/4214865866.png?imageView2/2/w/300)
 
 ###使用QQ发送配置文件
 将配置文件使用QQ发送到手机
@@ -51,9 +51,9 @@ Enjoy it!
 ![QQ图片20160617212723.png][6]
 
 
-  [1]: https://o3xwvu85n.qnssl.com/2016/06/3848708350.png?imageView2/2/w/300
-  [2]: https://o3xwvu85n.qnssl.com/2016/06/3783479544.png?imageView2/2/w/300
-  [3]: https://o3xwvu85n.qnssl.com/2016/06/760227249.png?imageView2/2/w/300
-  [4]: https://o3xwvu85n.qnssl.com/2016/06/2798648429.png?imageView2/2/w/300
-  [5]: https://o3xwvu85n.qnssl.com/2016/06/1400159461.png?imageView2/2/w/300
-  [6]: https://o3xwvu85n.qnssl.com/2016/06/3012130306.png?imageView2/2/w/300
+  [1]: https://publish.indexyz.me/images/2016/06/3848708350.png?imageView2/2/w/300
+  [2]: https://publish.indexyz.me/images/2016/06/3783479544.png?imageView2/2/w/300
+  [3]: https://publish.indexyz.me/images/2016/06/760227249.png?imageView2/2/w/300
+  [4]: https://publish.indexyz.me/images/2016/06/2798648429.png?imageView2/2/w/300
+  [5]: https://publish.indexyz.me/images/2016/06/1400159461.png?imageView2/2/w/300
+  [6]: https://publish.indexyz.me/images/2016/06/3012130306.png?imageView2/2/w/300
