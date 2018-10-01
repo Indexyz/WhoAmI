@@ -1,0 +1,1673 @@
+<?xml version="1.0" encoding="utf-8"?>
+<search> 
+  
+    
+    <entry>
+      <title><![CDATA[2018 年 Steam 暑期打折]]></title>
+      <url>/2018/06/22/2018-steam-summer/</url>
+      <content type="html"><![CDATA[<p>高考完了干什么, 当然是打游戏啊</p>
+<a id="more"></a>
+<h2 id="已剁列表"><a href="#已剁列表" class="headerlink" title="已剁列表"></a>已剁列表</h2><ul>
+<li>Mirror’s Edge™</li>
+<li>Dead Effect</li>
+<li>Nioh: Complete Edition / 仁王 Complete Edition</li>
+<li>Getting Over It with Bennett Foddy</li>
+<li>Redeemer</li>
+<li>Shadow of Mordor Game of the Year Edition and Shadow of War Gold Edition Bundle</li>
+<li>Frostpunk</li>
+<li>The Surge: Complete Edition</li>
+</ul>
+<p>然而这次大促还没结束 Orz</p>
+<h2 id="Steam-小游戏"><a href="#Steam-小游戏" class="headerlink" title="Steam 小游戏"></a>Steam 小游戏</h2><p>这小游戏据说会送游戏 然而太无聊了 (还不如去玩别的游戏)</p>
+<p>分数的增加实际上就是几个 HTTP 请求所构成的 (一开始还以为是 WS 啥的)</p>
+<p>写了个小脚本 <a href="https://github.com/Indexyz/steam_2018_summer_game" target="_blank" rel="noopener">GitHub Link</a></p>
+]]></content>
+      
+        <categories>
+            
+            <category> Steam </category>
+            
+            <category> Life </category>
+            
+        </categories>
+        
+        
+        <tags>
+            
+            <tag> Steam </tag>
+            
+        </tags>
+        
+    </entry>
+    
+    <entry>
+      <title><![CDATA[网络重装 CentOS]]></title>
+      <url>/2018/03/24/install-centos-via-network/</url>
+      <content type="html"><![CDATA[<p><code>Debian</code> 系的系统的网络重装脚本已经很多了 比如 <a href="https://moeclub.org/2017/03/25/82/" target="_blank" rel="noopener">这个脚本</a></p>
+<p>但是 <code>RedHat</code> 系列的系统却机没有网络安装脚本, 当需要调整分区或者是安装一个纯净的系统的时候就遇到了困难</p>
+<p>但是 <code>RedHat</code> 系的系统也是可以从网络重装的 下面就介绍一种网络重装的方法</p>
+<a id="more"></a>
+<p>本文主体部分主要是重装 CentOS 6, 会在最后列出重装 <code>CentOS 7</code> 和 <code>CentOS 6</code> 的区别 </p>
+<h1 id="CentOS-6-GRUB-1"><a href="#CentOS-6-GRUB-1" class="headerlink" title="CentOS 6 (GRUB 1)"></a>CentOS 6 (GRUB 1)</h1><p>首先 先获取机器的 IP地址，网关地址以及子网掩码</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">ip route | grep default <span class="comment"># 获取网关地址</span></span><br><span class="line">ip a s eth0             <span class="comment"># 获取 IP 地址 和 子网大小</span></span><br></pre></td></tr></table></figure>
+<p>然后下载 <code>vmlinuz</code> 和 <code>initrd.img</code> 到 <code>/boot</code></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cd</span> /boot</span><br><span class="line">wget http://mirror.centos.org/centos/6/os/x86_64/isolinux/vmlinuz</span><br><span class="line">wget http://mirror.centos.org/centos/6/os/x86_64/isolinux/initrd.img</span><br></pre></td></tr></table></figure>
+<p>编辑 <code>/etc/grub.conf</code> 在第一个 <code>title</code>标签 前面加入</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">title net</span><br><span class="line">    root (hd0,0)</span><br><span class="line">    kernel /boot/vmlinuz vnc vncpassword=12345678 headless ip=IPADDRES netmask=NETMASK gateway=GATEWAY dns=8.8.8.8 ksdevice=eth0 method=http://mirror.centos.org/centos/6/os/x86_64/ lang=en_US keymap=us</span><br><span class="line">    initrd /boot/initrd.img</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>注意 <code>root (hd0,0)</code> 的内容可能有所不同 比如在 OVH 独服 上是 <code>root (hd0,1)</code>具体按照下面那个 <code>title</code> 中的 <code>root</code>位置</p>
+<p>请将上面的 <code>IPADDRES</code>, <code>GATEWAY</code>, <code>NETMASK</code> 分别换成你机器的 IP 地址, 网关地址, 子网掩码</p>
+</blockquote>
+<p>然后重启就可以通过 <code>IP地址:1</code> 的端口来连接到 VNC 进行全新安装模式了</p>
+<h1 id="CentOS-7-GRUB2"><a href="#CentOS-7-GRUB2" class="headerlink" title="CentOS 7 (GRUB2)"></a>CentOS 7 (GRUB2)</h1><p>首先 先获取机器的 IP地址，网关地址以及子网掩码</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">ip route | grep default <span class="comment"># 获取网关地址</span></span><br><span class="line">ip a s eth0             <span class="comment"># 获取 IP 地址 和 子网大小</span></span><br></pre></td></tr></table></figure>
+<p>然后下载 <code>vmlinuz</code> 和 <code>initrd.img</code> 到 <code>/boot</code></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cd</span> /boot</span><br><span class="line">wget http://mirror.centos.org/centos/6/os/x86_64/isolinux/vmlinuz</span><br><span class="line">wget http://mirror.centos.org/centos/6/os/x86_64/isolinux/initrd.img</span><br></pre></td></tr></table></figure>
+<p>然后使用如下指令来获取硬盘分区的 UUID</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cat /etc/grub2.cfg | grep search | grep <span class="built_in">set</span>=root</span><br></pre></td></tr></table></figure>
+<p>将会有以下的输出</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">search --no-floppy --fs-uuid --<span class="built_in">set</span>=root 8c1015ef-fed5-4e77-bca0-478070c89df7</span><br></pre></td></tr></table></figure>
+<p>这里的 <code>8c1015ef-fed5-4e77-bca0-478070c89df7</code> 就是磁盘分区的 UUID</p>
+<p>接下来修改 <code>/etc/grub.d/40_custom</code> 在文件末尾加入</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">menuentry &apos;net&apos; &#123;</span><br><span class="line">  load_video</span><br><span class="line">  set gfxpayload=keep</span><br><span class="line">  insmod gzio</span><br><span class="line">  insmod part_msdos</span><br><span class="line">  insmod ext2</span><br><span class="line">  set root=&apos;hd0,msdos1&apos;</span><br><span class="line">  if [ x$feature_platform_search_hint = xy ]; then</span><br><span class="line">    search --no-floppy --fs-uuid --set=root --hint=&apos;hd0,msdos1&apos; PARTUUID</span><br><span class="line">  else</span><br><span class="line">    search --no-floppy --fs-uuid --set=root PARTUUID</span><br><span class="line">  fi</span><br><span class="line">  linux16 /vmlinuz inst.vnc inst.vncpassword=12345678 inst.headless ip=IPADDRES::GATEWAY:NETMASK::eth0:none nameserver=8.8.8.8 inst.repo=http://mirror.centos.org/centos/6/os/x86_64/ inst.lang=en_US inst.keymap=us</span><br><span class="line">  initrd16 /initrd.img</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>请将上面的 <code>PARTUUID</code>, <code>IPADDRES</code>, <code>GATEWAY</code>, <code>NETMASK</code> 分别换成你机器的 分区 UUID, IP 地址, 网关地址, 子网掩码</p>
+</blockquote>
+<p>接下来使用以下命令来重新生成 grub 引导文件以及在下次启动的时候进入网络安装模式</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">grub2-mkconfig -o /boot/grub2/grub.cfg</span><br><span class="line">grub2-reboot net</span><br></pre></td></tr></table></figure>
+<p>然后重启就可以通过 <code>IP地址:1</code> 的端口来连接到 VNC 进行全新安装模式了</p>
+<h1 id="常见问题"><a href="#常见问题" class="headerlink" title="常见问题"></a>常见问题</h1><h2 id="我在修改-grub-的时候该怎么填-initrd-img-和-vmlinuz-的地址"><a href="#我在修改-grub-的时候该怎么填-initrd-img-和-vmlinuz-的地址" class="headerlink" title="我在修改 grub 的时候该怎么填 initrd.img 和 vmlinuz 的地址"></a>我在修改 grub 的时候该怎么填 <code>initrd.img</code> 和 <code>vmlinuz</code> 的地址</h2><p>首先 查看是否有挂载在 <code>/boot</code> 下的分区</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">df -h | grep /boot</span><br></pre></td></tr></table></figure>
+<p> 如果有返回则代表应该直接以 <code>/initrd.img</code> 开头 如果没有的话以 <code>/boot/initrd.img</code> 开头</p>
+<h2 id="CentOS-7-和-CentOS-6-在写参数时的不同"><a href="#CentOS-7-和-CentOS-6-在写参数时的不同" class="headerlink" title="CentOS 7 和 CentOS 6 在写参数时的不同"></a>CentOS 7 和 CentOS 6 在写参数时的不同</h2><p>CentOS 7 的 格式如下</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">/boot/vmlinuz inst.vnc inst.vncpassword=12345678 inst.headless ip=IPADDRES::GATEWAY:NATMASK::eth0:none nameserver=8.8.8.8 inst.repo=http://mirror.centos.org/centos/7.4.1708/os/x86_64/ inst.lang=en_US</span><br></pre></td></tr></table></figure>
+<p>而 CentOS 6 的格式如下</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">/boot/vmlinuz vnc vncpassword=12345678 headless ip=IPADDRES netmask=NETMASK gateway=GATEWAY dns=8.8.8.8 ksdevice=eth0 method=http://mirror.centos.org/centos/6/os/x86_64/ lang=en_US keymap=us</span><br></pre></td></tr></table></figure>
+<h2 id="VNC-的默认密码是啥-如何修改"><a href="#VNC-的默认密码是啥-如何修改" class="headerlink" title="VNC 的默认密码是啥 如何修改"></a>VNC 的默认密码是啥 如何修改</h2><p><code>vnc</code> 的密码是在 <code>vmlinuz</code> 那段定义的 在上面的几段配置文件中都为 <code>12345678</code></p>
+<p>可以通过 修改 <code>vncpassword</code>和 <code>inst.vncpassword</code> 的方式来修改密码 </p>
+<blockquote>
+<p>密码必须长于 8 位</p>
+</blockquote>
+]]></content>
+      
+        <categories>
+            
+            <category> Linux </category>
+            
+        </categories>
+        
+        
+        <tags>
+            
+            <tag> Linux </tag>
+            
+            <tag> CentOS </tag>
+            
+        </tags>
+        
+    </entry>
+    
+    <entry>
+      <title><![CDATA[自动更新 Rancher 上的应用]]></title>
+      <url>/2018/02/03/automatic-deploy-rancher/</url>
+      <content type="html"><![CDATA[<p>之前有介绍过 <code>rancher</code> 的使用方式 现在有个新的问题 如果我们需要在每次 <code>CI</code> 构建结束之后都自动更新 rancher 上的 service 该怎么办</p>
+<a id="more"></a>
+<p>Rancher 官方有提供一个 <a href="https://rancher.com/docs/rancher/v1.6/en/api/v2-beta/" target="_blank" rel="noopener">API</a> 通过他我们可以方便的管理 rancher 的各个功能</p>
+<p>当然 我也写了一个小工具来更新 service</p>
+<div id="badge-container-Indexyz-rancher-webhook-update-undefined" class="hexo-github" style="width: 100%"></div>
+<script src="/hexo-github/badge.js"></script>
+<script type="text/javascript">
+  loadStyle("/hexo-github/style.css");
+  loadStyle("/hexo-github/octicons/octicons.css");
+  new Badge("#badge-container-Indexyz-rancher-webhook-update-undefined", "Indexyz", "rancher-webhook-update", "", false);
+</script>
+
+<h2 id="如何使用"><a href="#如何使用" class="headerlink" title="如何使用"></a>如何使用</h2><p>现在我就适配了在 <code>gitlab</code> 的 CI 构建完成之后来更新 service</p>
+<p>为什么选择 gitlab ? </p>
+<p>原因有两个</p>
+<ol>
+<li>GitLab 提供免费的 Registry 可以在每次构建成功之后直接从他的 Registery 中拉下映像</li>
+<li>GitLab 支持免费私有 Repo</li>
+</ol>
+<p><del>简单来说就是我穷</del></p>
+<h3 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h3><p>修改 <code>config.py</code> 中的内容为你的配置文件 </p>
+<p>当然这些配置项都是可以通过环境变量来设置的</p>
+<p>这样可以方便我们直接在 <code>Docker</code> 中跑起来项目 或者是在 <code>Heroku</code> 上托管</p>
+<h3 id="运行"><a href="#运行" class="headerlink" title="运行"></a>运行</h3><p>直接 <code>gunicorn main:app --log-file=-</code> 然后就运行了一个在 <code>:8080</code> 上的服务器</p>
+<h3 id="配置"><a href="#配置" class="headerlink" title="配置"></a>配置</h3><p>在 <code>GitLab</code> 的 <code>Settings &gt; Integrations</code> 添加 <code>Webhook</code></p>
+<p><img src="https://publish.indexyz.me/images/2018/02/04/gitlab-integations.png" alt="gitlab integations"></p>
+<blockquote>
+<p>通过 <a href="https://www.random.org" target="_blank" rel="noopener">random.org</a> 来生成高强度的 <code>Secret Token</code></p>
+</blockquote>
+<p>我们在下面的多选框中选中 <code>Pipeline events</code> 并且输入我们的 updater 的地址</p>
+<p>地址 的格式为<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">http(s)://url-of-updater/webhook/gitlab/&#123;prject-id&#125;/&#123;service-id&#125;</span><br></pre></td></tr></table></figure></p>
+<p>然后 在每次构建成功的时候就会自带推送了!</p>
+]]></content>
+      
+        <categories>
+            
+            <category> Software </category>
+            
+        </categories>
+        
+        
+        <tags>
+            
+            <tag> Software </tag>
+            
+        </tags>
+        
+    </entry>
+    
+    <entry>
+      <title><![CDATA[使用 Docker 快速安装 ss-panel-v3-mod]]></title>
+      <url>/2017/12/26/setup-sspanel-via-docker/</url>
+      <content type="html"><![CDATA[<p><code>ss-panel-v3-mod</code> 是一个美观 功能强大的代理管理面板 但是依赖什么的对新手简直是爆炸 装个 <code>lnmp</code> 都要一个小时左右 现在使用 <code>Docker</code> 可以快速的完成面板的搭建</p>
+<a id="more"></a>
+<h1 id="始"><a href="#始" class="headerlink" title="始"></a>始</h1><p>我们需要首先安装 <code>Docker</code><br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">curl -sSL get.docker.com | bash</span><br><span class="line"><span class="comment"># 在 Arch Linux 当中 官方源已经有了 Docker 我们直接安装就好了</span></span><br><span class="line">pacman -S docker</span><br><span class="line">systemctl <span class="built_in">enable</span> docker</span><br><span class="line">systemctl start docker</span><br></pre></td></tr></table></figure></p>
+<p>我们需要 <code>Pull</code> 以下映像</p>
+<ul>
+<li>mysql</li>
+<li>indexyz/ss-panel-v3-mod-docker</li>
+<li>indexyz/php-crontab</li>
+<li>phpmyadmin/phpmyadmin</li>
+</ul>
+<p>全部的文件储存在 <code>/data</code> 这个 <code>Endpoint</code> 下面<br>使用<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">mkdir /data</span><br><span class="line"><span class="built_in">cd</span> /data</span><br></pre></td></tr></table></figure></p>
+<p>来开始</p>
+<h1 id="开始搭建"><a href="#开始搭建" class="headerlink" title="开始搭建"></a>开始搭建</h1><h2 id="搭建-MySQL"><a href="#搭建-MySQL" class="headerlink" title="搭建 MySQL"></a>搭建 MySQL</h2><p>我们需要安装 <code>MySQL</code> 作为数据库存储信息<br>使用 <code>Docker</code> 运行数据库只需要</p>
+<blockquote>
+<p>我们假定数据库密码为 pa44w@rd</p>
+</blockquote>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 如果想只使用 Web API 进行链接 可以取消掉 -p 那一段</span></span><br><span class="line">docker run --name panel-database \</span><br><span class="line">    --restart=always -p 3306:3306 \</span><br><span class="line">    -e MYSQL_ROOT_PASSWORD=pa44w@rd -d \</span><br><span class="line">    mysql:5.7.22</span><br></pre></td></tr></table></figure>
+<h2 id="安装-PHPMyAdmin"><a href="#安装-PHPMyAdmin" class="headerlink" title="安装 PHPMyAdmin"></a>安装 PHPMyAdmin</h2><p><code>PHPMyAdmin</code> 是一个方便的 MySQL数据库 管理工具<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">docker run --name panel-phpmyadmin \</span><br><span class="line">    -d --link panel-database:db \</span><br><span class="line">    -p 8080:80 \</span><br><span class="line">    phpmyadmin/phpmyadmin</span><br></pre></td></tr></table></figure></p>
+<p>然后访问 <code>http://localhost:8080</code> 就能看到 <code>PHPMyAdmin</code> 的界面了<br>使用用户名 <code>root</code> 和密码 <code>pa44w@rd</code> 就能登录到数据库了</p>
+<h2 id="创建数据库"><a href="#创建数据库" class="headerlink" title="创建数据库"></a>创建数据库</h2><p>在 PHPMyAdmin 创建一个数据库</p>
+<blockquote>
+<p>在本教程中 数据库名称为 panel</p>
+</blockquote>
+<p><img src="https://publish.indexyz.me/images/2017/12/12/phpMyAdmin-CreateDatabase.png" alt="Create-Database"><br>导入这个 <a href="https://github.com/esdeathlove/ss-panel-v3-mod/raw/new_master/sql/glzjin_all.sql" target="_blank" rel="noopener">数据库文件</a> 到刚刚创建的数据库中</p>
+<h2 id="安装面板"><a href="#安装面板" class="headerlink" title="安装面板"></a>安装面板</h2><p>首先我们先把配置文件下载过来 使用<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">wget https://github.com/esdeathlove/ss-panel-v3-mod/raw/new_master/config/.config.php.example -O config.php</span><br></pre></td></tr></table></figure></p>
+<p>然后我们就能创建容器了<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">docker run --name panel -d \</span><br><span class="line">    -v /data/config.php:/data/www/config/.config.php \</span><br><span class="line">    --link panel-database:db \</span><br><span class="line">    -p 10080:80 \</span><br><span class="line">    indexyz/ss-panel-v3-mod-docker</span><br></pre></td></tr></table></figure></p>
+<p>这时候可以访问 <code>http://localhost:10080</code> 了 不过我们还没有配置数据库 所以还是会返回 <code>500</code> 错误</p>
+<h2 id="配置-ss-panel"><a href="#配置-ss-panel" class="headerlink" title="配置 ss-panel"></a>配置 ss-panel</h2><p>我们使用文本编辑器打开 <code>config.php</code><br>找到以下内容<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">$System_Config[<span class="string">'db_host'</span>] = <span class="string">'localhost'</span>;</span><br><span class="line">$System_Config[<span class="string">'db_database'</span>] = <span class="string">''</span>;</span><br><span class="line">$System_Config[<span class="string">'db_username'</span>] = <span class="string">''</span>;</span><br><span class="line">$System_Config[<span class="string">'db_password'</span>] = <span class="string">''</span>;</span><br></pre></td></tr></table></figure></p>
+<p>修改为<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">$System_Config[<span class="string">'db_host'</span>] = <span class="string">'db'</span>;</span><br><span class="line">$System_Config[<span class="string">'db_database'</span>] = <span class="string">'panel'</span>;</span><br><span class="line">$System_Config[<span class="string">'db_username'</span>] = <span class="string">'root'</span>;</span><br><span class="line">$System_Config[<span class="string">'db_password'</span>] = <span class="string">'pa44w@rd'</span>;</span><br></pre></td></tr></table></figure></p>
+<p>别的配置项按自己的需要配置 或者按自己的心情配置 配置完成之后重启下容器<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker restart panel</span><br></pre></td></tr></table></figure></p>
+<p>然后就能显示站点了（</p>
+<h2 id="配置定时任务"><a href="#配置定时任务" class="headerlink" title="配置定时任务"></a>配置定时任务</h2><p>这部分很简单 只需要<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">docker run -d \</span><br><span class="line">    -v /data/config.php:/data/www/config/.config.php \</span><br><span class="line">    --link panel-database:db \</span><br><span class="line">    indexyz/php-crontab</span><br></pre></td></tr></table></figure></p>
+<h1 id="常见问题"><a href="#常见问题" class="headerlink" title="常见问题"></a>常见问题</h1><h2 id="我该怎么创建管理员帐号"><a href="#我该怎么创建管理员帐号" class="headerlink" title="我该怎么创建管理员帐号"></a>我该怎么创建管理员帐号</h2><p>有两种方法 往数据库的邀请码加入邀请注册后直接改 <code>is_admin</code><br>还有一种就是进入容器进行添加<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">docker exec -it panel bash</span><br><span class="line">/usr/local/php/bin/php /data/www/xcat createAdmin</span><br><span class="line"># 然后提供邮箱什么的信息 就创建完成了</span><br></pre></td></tr></table></figure></p>
+]]></content>
+      
+        <categories>
+            
+            <category> Docker </category>
+            
+        </categories>
+        
+        
+        <tags>
+            
+            <tag> Docker </tag>
+            
+            <tag> Shadowsocks </tag>
+            
+        </tags>
+        
+    </entry>
+    
+    <entry>
+      <title><![CDATA[Linux 搭建 grafana + influxdb + collectd]]></title>
+      <url>/2017/10/28/grafana-collectd-collectd-monitor/</url>
+      <content type="html"><![CDATA[<p>最近一直想搞个监控系统来检测下大陆到国外的延时什么的, 但是 <code>SmokePing</code> 的图表太玄学了 而且界面像是上个世纪的 所以想坑一下计划了很久的 <code>Grafana</code>.</p>
+<a id="more"></a>
+<blockquote>
+<p>抽烟ping看得懂的，都是文森特凡高的后代啊（蔡博语）…… 来搞IT可惜了…… —— 某大佬</p>
+</blockquote>
+<h1 id="环境"><a href="#环境" class="headerlink" title="环境"></a>环境</h1><p>本文接下来都在 <code>Arch Linux</code> 上安装 大部分软件的搭建使用 <code>Docker</code> 来保证别的系统也可用<br>数据储存在 <code>/data</code></p>
+<h2 id="安装-Docker"><a href="#安装-Docker" class="headerlink" title="安装 Docker"></a>安装 Docker</h2><p>对于其他系统, 官方已经准备了一键安装脚本 执行就好了<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">curl -sSL get.docker.com | bash</span><br></pre></td></tr></table></figure></p>
+<p>对于 <code>Arch Linux</code> 官方的源中已经有了 <code>Docker</code> 的存在<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">pacman -S docker</span><br><span class="line">systemctl start docker</span><br><span class="line">systemctl <span class="built_in">enable</span> docker</span><br></pre></td></tr></table></figure></p>
+<h2 id="Pull-所需的映像"><a href="#Pull-所需的映像" class="headerlink" title="Pull 所需的映像"></a>Pull 所需的映像</h2><ul>
+<li>influxdb:alpine</li>
+<li>grafana/grafana</li>
+<li>busybox:latest</li>
+</ul>
+<h1 id="Collectd"><a href="#Collectd" class="headerlink" title="Collectd"></a>Collectd</h1><p>对于 <code>Collectd</code> 我们使用从包管理器安装的方法安装 而不是运行 <code>Docker 映像</code> 因为 <code>Collectd</code> 的数据收集 <code>CPU 内存 网络使用</code> 需要收集宿主机的信息</p>
+<h2 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h2><p>默认包管理已经有现成的了<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pacman -S collectd</span><br></pre></td></tr></table></figure></p>
+<p>其他系统请参考 <a href="https://collectd.org/download.shtml" target="_blank" rel="noopener">官方教程</a></p>
+<h2 id="启动"><a href="#启动" class="headerlink" title="启动"></a>启动</h2><p>使用 <code>systemd</code> 管理<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">systemctl <span class="built_in">enable</span> collectd</span><br><span class="line">systemctl start collectd</span><br></pre></td></tr></table></figure></p>
+<h1 id="InfluxDB"><a href="#InfluxDB" class="headerlink" title="InfluxDB"></a>InfluxDB</h1><p>首先我们需要生成配置文件<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker run --rm influxdb:alpine influxd config &gt; influxdb.conf</span><br></pre></td></tr></table></figure></p>
+<p>这时候在本目录 <code>/data</code> 下可以看见 <code>influxdb.conf</code> 这一个配置文件了</p>
+<h2 id="运行"><a href="#运行" class="headerlink" title="运行"></a>运行</h2><p><code>Docker</code> 运行就好了<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">docker run -d -p 8086:8086 -p 8083:8083 -p 25826:25826/udp \</span><br><span class="line">  -v /data/influxdb_volume:/var/lib/influxdb \</span><br><span class="line">  -v /data/influxdb.conf:/etc/influxdb/influxdb.conf:ro \</span><br><span class="line">  -v /usr/share/collectd/types.db:/usr/share/collectd/types.db \</span><br><span class="line">  --restart=always --name influxdb \</span><br><span class="line">  -e GOGC=10 \</span><br><span class="line">  -e INFLUXDB_DATA_INDEX_VERSION=tsi1 \</span><br><span class="line">  -e INFLUXDB_ADMIN_ENABLED=<span class="literal">true</span> \</span><br><span class="line">  influxdb:alpine -config /etc/influxdb/influxdb.conf</span><br></pre></td></tr></table></figure></p>
+<p>这时候就运行了 <code>influxdb</code> 了</p>
+<h2 id="身份验证"><a href="#身份验证" class="headerlink" title="身份验证"></a>身份验证</h2><p>通过 <code>exec</code> 进入容器创建账户<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">docker <span class="built_in">exec</span> -it &#123;container_id&#125; bash</span><br><span class="line">influx</span><br><span class="line"><span class="comment"># 创建账户</span></span><br><span class="line">&gt; CREATE USER &lt;username&gt; WITH PASSWORD <span class="string">'&lt;password&gt;'</span> WITH ALL PRIVILEGES</span><br><span class="line"><span class="comment"># 创建数据库</span></span><br><span class="line">&gt; CREATE DATABASE collectdb</span><br><span class="line">&gt; quit</span><br><span class="line"><span class="comment"># ^P + Q</span></span><br></pre></td></tr></table></figure></p>
+<p>然后编辑 <code>influxdb.conf</code><br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">$ nano influxdb.conf</span><br><span class="line"><span class="comment"># 找到 </span></span><br><span class="line"><span class="comment"># [http]</span></span><br><span class="line"><span class="comment">#  enabled = true</span></span><br><span class="line"><span class="comment">#  bind-address = ":8086"</span></span><br><span class="line"><span class="comment">#  auth-enabled = false     &lt;---</span></span><br></pre></td></tr></table></figure></p>
+<p>将 <code>auth-enabled</code> 改为 <code>true</code> 然后保存退出 最后重启容器<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker restart &#123;container_id&#125;</span><br></pre></td></tr></table></figure></p>
+<p>这时候 <code>InfluxDB</code> 已经安装成功了</p>
+<h2 id="和-Collectd-对接"><a href="#和-Collectd-对接" class="headerlink" title="和 Collectd 对接"></a>和 Collectd 对接</h2><h3 id="InfluxDB-部分"><a href="#InfluxDB-部分" class="headerlink" title="InfluxDB 部分"></a>InfluxDB 部分</h3><p>打开 <code>influxdb.conf</code> 配置文件<br>找到<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">[[collectd]]</span><br><span class="line">  enabled = false             // &lt;-----</span><br><span class="line">  bind-address = &quot;:25826&quot;</span><br><span class="line">  database = &quot;collectd&quot;       // &lt;-----</span><br></pre></td></tr></table></figure></p>
+<p>将这里的 <code>enable</code> 改为 <code>true</code> 打开 <code>collectd</code> 收集<br>同时将 <code>database</code> 改为要收集到的数据库 根据上下文应该为 <code>collectdb</code></p>
+<blockquote>
+<p>注意 25826/udp 是可以绕过账户保护的 请对这个端口使用防火墙什么的</p>
+</blockquote>
+<p>修改完成后重启 <code>influxdb</code> 接下来要修改 <code>collectd</code> 配置文件了</p>
+<h3 id="Collectd-部分"><a href="#Collectd-部分" class="headerlink" title="Collectd 部分"></a>Collectd 部分</h3><p><code>collectd</code> 的配置文件在 <code>/etc/collectd.conf</code><br>我使用的配置文件为<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># cat /etc/collectd.conf</span></span><br><span class="line">BaseDir <span class="string">"/etc/collectd"</span></span><br><span class="line">PIDFile <span class="string">"/run/collectd.pid"</span></span><br><span class="line">Hostname <span class="string">"localhost"</span></span><br><span class="line">Interval 60</span><br><span class="line">&lt;loadplugin df&gt; </span><br><span class="line">    Interval 120</span><br><span class="line">&lt;/loadplugin&gt;</span><br><span class="line">LoadPlugin disk</span><br><span class="line">LoadPlugin interface</span><br><span class="line">LoadPlugin load</span><br><span class="line">LoadPlugin memory</span><br><span class="line">LoadPlugin network</span><br><span class="line">LoadPlugin processes</span><br><span class="line">LoadPlugin users</span><br><span class="line">LoadPlugin ping</span><br><span class="line">&lt;plugin interface&gt;</span><br><span class="line">    Interface <span class="string">"eth0"</span></span><br><span class="line">    IgnoreSelected <span class="literal">false</span></span><br><span class="line">&lt;/plugin&gt;</span><br><span class="line">&lt;plugin network&gt;</span><br><span class="line">    Server <span class="string">"&#123; InfluxDB Host &#125;"</span> <span class="string">"25826"</span></span><br><span class="line">&lt;/plugin&gt;</span><br><span class="line">&lt;plugin ping&gt;</span><br><span class="line">    Host <span class="string">"&#123; Host you want to ping &#125;"</span></span><br><span class="line">    Host <span class="string">"&#123; Another host you want to ping &#125;"</span></span><br><span class="line">    Interval 5.0</span><br><span class="line">    Timeout 0.9</span><br><span class="line">    TTL 255</span><br><span class="line">&lt;/plugin&gt;</span><br></pre></td></tr></table></figure></p>
+<p>你可以参考我的配置文件对 <code>collectd</code> 进行配置<br>配置完成之后<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">systemctl restart collectd</span><br></pre></td></tr></table></figure></p>
+<h1 id="Grafana"><a href="#Grafana" class="headerlink" title="Grafana"></a>Grafana</h1><h2 id="安装-1"><a href="#安装-1" class="headerlink" title="安装"></a>安装</h2><p><code>Grafana</code> 的安装很简单 只需要<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">docker run -d -v /var/lib/grafana --name grafana-storage busybox:latest</span><br><span class="line">docker run \</span><br><span class="line">  -d \</span><br><span class="line">  -p 3000:3000 \</span><br><span class="line">  --name=grafana \</span><br><span class="line">  --volumes-from grafana-storage \</span><br><span class="line">  grafana/grafana</span><br></pre></td></tr></table></figure></p>
+<p>访问 <code>http://localhost:3000</code> 就可以看到面板了<br>默认账号和密码都是 <code>admin</code> 请及时修改<br><img src="https://publish.indexyz.me/images/2017/12/12/Grafana-Index.png" alt="Grafana Index"></p>
+<h2 id="数据源"><a href="#数据源" class="headerlink" title="数据源"></a>数据源</h2><p>点击 <code>Getting Started</code> 中的 <code>Add data source</code> 我们来添加 <code>influxdb</code> 作为数据源<br>按照下图设置数据源 然后点击 <code>Add</code> 按钮 如果可以链接就代表成功了<br><img src="https://publish.indexyz.me/images/2017/12/12/Grafana-Data-Source.png" alt="Grafana Data Source"></p>
+<h2 id="创建图表"><a href="#创建图表" class="headerlink" title="创建图表"></a>创建图表</h2><p><code>Create Dashboard</code> 然后选 <code>Graph</code><br>然后点击 <code>Panel Title</code> 在弹出的选项中点击 <code>Edit</code> 然后就可以添加查询了<br>一个查询可能长这样<br><img src="https://publish.indexyz.me/images/2017/12/12/Grafana-Add-Query.png" alt="Grafana Add Query"></p>
+<h1 id="成果"><a href="#成果" class="headerlink" title="成果"></a>成果</h1><p>最后多添加几个查询 然后改下 <code>Title</code> 什么的 一个监控面板就出来了<br><img src="https://publish.indexyz.me/images/2017/12/12/Grafana-Dashboard.png" alt="Grafana Dashboard"><br>当然这里没有细讲各个组件的高级应用 自己慢慢玩吧(</p>
+]]></content>
+      
+        <categories>
+            
+            <category> Linux </category>
+            
+        </categories>
+        
+        
+        <tags>
+            
+            <tag> Linux </tag>
+            
+            <tag> Monitor </tag>
+            
+            <tag> Dashboard </tag>
+            
+        </tags>
+        
+    </entry>
+    
+    <entry>
+      <title><![CDATA[在 Linux 上使用 redsocks 进行全局 socks5]]></title>
+      <url>/2017/10/22/use-redsocks-proxy-global-via-redsocks/</url>
+      <content type="html"><![CDATA[<p>在中国大陆由于一些众所周知以及网络环境有时候会比较差的原因, 我们可能会需要使用代理服务器来进行转发流量. 但是有些软件不支持代理, 如何让它走代理呢? 那就要介绍下 <code>redsocks</code> 了.</p>
+<a id="more"></a>
+<h1 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h1><p>redsocks 的安装比较方便 从 GitHub 检出代码然后编译就好了<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">git <span class="built_in">clone</span> https://github.com/darkk/redsocks</span><br><span class="line"><span class="built_in">cd</span> redsocks</span><br><span class="line">make</span><br></pre></td></tr></table></figure></p>
+<h2 id="配置"><a href="#配置" class="headerlink" title="配置"></a>配置</h2><p>默认我们认为本地 <code>socks</code> 代理在 <code>127.0.0.1:1080</code><br>将配置文件配为下面这样<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">// $ cat redsocks.conf </span><br><span class="line">base &#123;</span><br><span class="line">    log_debug = off;</span><br><span class="line">    log_info = off;</span><br><span class="line">    log = &quot;syslog:daemon&quot;;</span><br><span class="line">    // 改成 on 使用 daemon 运行</span><br><span class="line">    daemon = on;</span><br><span class="line">    user = redsocks;</span><br><span class="line">    group = redsocks;</span><br><span class="line">    redirector = iptables;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">redsocks &#123;</span><br><span class="line">    local_ip = 127.0.0.1;</span><br><span class="line">    local_port = 31338;</span><br><span class="line">    </span><br><span class="line">    ip = 127.0.0.1;</span><br><span class="line">    port = 1080;</span><br><span class="line"></span><br><span class="line">    type = socks5;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h2 id="启动"><a href="#启动" class="headerlink" title="启动"></a>启动</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./redsocks</span><br></pre></td></tr></table></figure>
+<p>就可以运行了</p>
+<h1 id="配置-iptables"><a href="#配置-iptables" class="headerlink" title="配置 iptables"></a>配置 iptables</h1><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Transparent SOCKS proxy</span></span><br><span class="line"><span class="comment"># See: http://darkk.net.ru/redsocks/</span></span><br><span class="line"></span><br><span class="line">*nat</span><br><span class="line">:PREROUTING ACCEPT [0:0]</span><br><span class="line">:INPUT ACCEPT [0:0]</span><br><span class="line">:OUTPUT ACCEPT [0:0]</span><br><span class="line">:POSTROUTING ACCEPT [0:0]</span><br><span class="line">:REDSOCKS - [0:0]</span><br><span class="line"></span><br><span class="line"><span class="comment"># Redirect all output through redsocks</span></span><br><span class="line">-A OUTPUT -p tcp -j REDSOCKS</span><br><span class="line"></span><br><span class="line"><span class="comment"># Whitelist LANs and some other reserved addresses.</span></span><br><span class="line"><span class="comment"># https://en.wikipedia.org/wiki/Reserved_IP_addresses#Reserved_IPv4_addresses</span></span><br><span class="line">-A REDSOCKS -d 0.0.0.0/8 -j RETURN</span><br><span class="line">-A REDSOCKS -d 10.0.0.0/8 -j RETURN</span><br><span class="line">-A REDSOCKS -d 127.0.0.0/8 -j RETURN</span><br><span class="line">-A REDSOCKS -d 169.254.0.0/16 -j RETURN</span><br><span class="line">-A REDSOCKS -d 172.16.0.0/12 -j RETURN</span><br><span class="line">-A REDSOCKS -d 192.168.0.0/16 -j RETURN</span><br><span class="line">-A REDSOCKS -d 224.0.0.0/4 -j RETURN</span><br><span class="line">-A REDSOCKS -d 240.0.0.0/4 -j RETURN</span><br><span class="line"><span class="comment">#-A REDSOCKS -d &#123; 代理服务端的地址 &#125; -j RETURN</span></span><br><span class="line"><span class="comment"># shadowsocks server port</span></span><br><span class="line">-A REDSOCKS -p tcp --dport &#123; 代理服务端的端口 &#125; -j RETURN</span><br><span class="line"></span><br><span class="line"><span class="comment"># Redirect everything else to redsocks port</span></span><br><span class="line">-A REDSOCKS -p tcp -j REDIRECT --to-ports 31338</span><br><span class="line"></span><br><span class="line">COMMIT</span><br></pre></td></tr></table></figure>
+<p>然后全部的 <code>TCP</code> 链接就会走代理了</p>
+]]></content>
+      
+        <categories>
+            
+            <category> Linux </category>
+            
+        </categories>
+        
+        
+        <tags>
+            
+            <tag> Linux </tag>
+            
+            <tag> Proxy </tag>
+            
+            <tag> iptables </tag>
+            
+        </tags>
+        
+    </entry>
+    
+    <entry>
+      <title><![CDATA[在Linux系统上使用ASF挂卡]]></title>
+      <url>/2017/10/04/use-asf2-to-farm-in-linux/</url>
+      <content type="html"><![CDATA[<p>Steam的卡片可是可以回本的 但是 <code>Idle Master</code> 这些挂机需要使用 <code>Windows</code> 的虚拟机 但是 Windows 的机器并不好搞 然后我就发现了 <code>Archi&#39;s Steam Farm</code> 简称 <code>ASF</code>, 这位dalao模拟了 Steam 客户端的操作进行挂卡 虽然是 <code>Dot Net</code> 写的 但是可以在 Linux 上使用 <code>Mono</code> 运行 最新的 ASF 甚至已经可以脱离 Mono 运行了 这篇文章就是记录了怎么在Linux上运行ASF 2, ASF 3 有可能在未来开一篇文章单独讲</p>
+<a id="more"></a>
+<p>本文的系统环境是 <code>CentOS 7</code> 其他发行版可能需要自己更换部分代码 (比如包管理安装包什么的)</p>
+<h1 id="准备工作"><a href="#准备工作" class="headerlink" title="准备工作"></a>准备工作</h1><p>环境的部署<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">yum -y install epel-release</span><br><span class="line">yum -y install yum-utils tmux wget unzip </span><br><span class="line">rpm --import <span class="string">"http://keyserver.ubuntu.com/pks/lookup?op=get&amp;search=0x3FA7E0328081BFF6A14DA29AA6A19B38D3D831EF"</span>   </span><br><span class="line">yum-config-manager --add-repo http://download.mono-project.com/repo/centos/</span><br><span class="line">yum -y install mono-complete</span><br></pre></td></tr></table></figure></p>
+<p>这样就部署了 <code>Mono</code><br>输入以下指令来测试<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mono -V</span><br></pre></td></tr></table></figure></p>
+<h1 id="获取-ASF"><a href="#获取-ASF" class="headerlink" title="获取 ASF"></a>获取 ASF</h1><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">mkdir steam</span><br><span class="line"><span class="built_in">cd</span> steam</span><br><span class="line">wget https://github.com/JustArchi/ArchiSteamFarm/releases/download/2.3.2.4/ASF.zip</span><br><span class="line">unzip ASF.zip</span><br></pre></td></tr></table></figure>
+<p>这样就获得了 ASF2 的最后一个 <code>Release</code></p>
+<h1 id="配置"><a href="#配置" class="headerlink" title="配置"></a>配置</h1><h2 id="全局配置文件"><a href="#全局配置文件" class="headerlink" title="全局配置文件"></a>全局配置文件</h2><p>可以在 <code>config/ASF.json</code> 中配置全局配置 默认配置如下<br><figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    <span class="attr">"AutoRestart"</span>: <span class="literal">true</span>,</span><br><span class="line">    <span class="attr">"AutoUpdates"</span>: <span class="literal">true</span>,</span><br><span class="line">    <span class="attr">"Blacklist"</span>: [],</span><br><span class="line">    <span class="attr">"ConnectionTimeout"</span>: <span class="number">60</span>,</span><br><span class="line">    <span class="attr">"CurrentCulture"</span>: <span class="literal">null</span>,</span><br><span class="line">    <span class="attr">"Debug"</span>: <span class="literal">false</span>,</span><br><span class="line">    <span class="attr">"FarmingDelay"</span>: <span class="number">15</span>,</span><br><span class="line">    <span class="attr">"GiftsLimiterDelay"</span>: <span class="number">1</span>,</span><br><span class="line">    <span class="attr">"Headless"</span>: <span class="literal">false</span>,</span><br><span class="line">    <span class="attr">"IdleFarmingPeriod"</span>: <span class="number">3</span>,</span><br><span class="line">    <span class="attr">"InventoryLimiterDelay"</span>: <span class="number">3</span>,</span><br><span class="line">    <span class="attr">"LoginLimiterDelay"</span>: <span class="number">10</span>,</span><br><span class="line">    <span class="attr">"MaxFarmingTime"</span>: <span class="number">10</span>,</span><br><span class="line">    <span class="attr">"MaxTradeHoldDuration"</span>: <span class="number">15</span>,</span><br><span class="line">    <span class="attr">"OptimizationMode"</span>: <span class="number">0</span>,</span><br><span class="line">    <span class="attr">"Statistics"</span>: <span class="literal">true</span>,</span><br><span class="line">    <span class="attr">"SteamOwnerID"</span>: <span class="number">0</span>,</span><br><span class="line">    <span class="attr">"SteamProtocol"</span>: <span class="number">6</span>,</span><br><span class="line">    <span class="attr">"UpdateChannel"</span>: <span class="number">1</span>,</span><br><span class="line">    <span class="attr">"WCFBinding"</span>: <span class="number">0</span>,</span><br><span class="line">    <span class="attr">"WCFHost"</span>: <span class="string">"127.0.0.1"</span>,</span><br><span class="line">    <span class="attr">"WCFPort"</span>: <span class="number">1242</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>配置项的意义可以在 <a href="https://github.com/JustArchi/ArchiSteamFarm/wiki/Configuration" target="_blank" rel="noopener">官方Wiki</a> 中看到</p>
+<h2 id="个人配置文件"><a href="#个人配置文件" class="headerlink" title="个人配置文件"></a>个人配置文件</h2><p>可以直接编辑 <code>minimal.json</code> 来快速配置</p>
+<blockquote>
+<p>注意! minimal.jsom 和 example.json 这两个文件将不会被读取<br><figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    <span class="attr">"Enabled"</span>: <span class="literal">true</span>,</span><br><span class="line">    <span class="attr">"SteamLogin"</span>: <span class="string">"&#123;&#123; steam 用户名 &#125;&#125;"</span>,</span><br><span class="line">    <span class="attr">"SteamPassword"</span>: <span class="string">"&#123;&#123; steam 密码 &#125;&#125;"</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+</blockquote>
+<p>可以增加几条实用的选项</p>
+<ul>
+<li>FarmOffline: true  # 在离线模式下挂卡</li>
+<li>DismissInventoryNotifications: false  # 显示挂卡获得卡的邮件</li>
+</ul>
+<h1 id="开始挂卡"><a href="#开始挂卡" class="headerlink" title="开始挂卡"></a>开始挂卡</h1><p>因为 Linux 的运行是断开 SSH 直接杀掉进程的 所以我们需要用 tmux 来进行会话管理<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">tmux</span><br><span class="line">mono ASF.exe</span><br></pre></td></tr></table></figure></p>
+<p>这样就在 tmux 中运行了 ASF 下次运行只需要 <code>tmux a</code> 就可以进入这个 session 了</p>
+]]></content>
+      
+        <categories>
+            
+            <category> Steam </category>
+            
+        </categories>
+        
+        
+        <tags>
+            
+            <tag> Linux </tag>
+            
+            <tag> Steam </tag>
+            
+            <tag> Usage </tag>
+            
+        </tags>
+        
+    </entry>
+    
+    <entry>
+      <title><![CDATA[使用浏览器进行ICO挖矿]]></title>
+      <url>/2017/10/03/use-brower-mine/</url>
+      <content type="html"><![CDATA[<p>最近这玩意好像很火的样子</p>
+<a id="more"></a>
+<h1 id="矿池"><a href="#矿池" class="headerlink" title="矿池"></a>矿池</h1><p>比较著名的就是coinhive了 现在国内也有一个类似的项目</p>
+<ul>
+<li><a href="https://coinhive.com" target="_blank" rel="noopener">coinhive</a></li>
+<li><a href="https://ppoi.org" target="_blank" rel="noopener">ppoi</a></li>
+</ul>
+<h1 id="用途"><a href="#用途" class="headerlink" title="用途"></a>用途</h1><p>这玩意用途看起来也有挺多 比如可以替代传统的验证码 (每次用户注册/登陆都可以要求算一下 233)<br>不过这玩意看起来还是游戏性质 像前些日子海盗湾就用了这Miner来进行挖矿 不过听说也挖不了多少个 (来自50KVM大佬) </p>
+<h1 id="测试"><a href="#测试" class="headerlink" title="测试"></a>测试</h1><p>Anyway, 就当试试看好了 233</p>
+<p><script src="https://coinhive.com/lib/miner.min.js" async></script></p>
+<div class="coinhive-miner" style="width: 256px; height: 310px" data-key="poaOOEfAN9Rp2nBnRHsyr1VR7Y1GYWud"><br>    <em>Please disable Adblock!</em><br></div>]]></content>
+      
+        <categories>
+            
+            <category> ICO </category>
+            
+        </categories>
+        
+        
+        <tags>
+            
+            <tag> ICO </tag>
+            
+            <tag> Javascript </tag>
+            
+        </tags>
+        
+    </entry>
+    
+    <entry>
+      <title><![CDATA[Windows 下的包管理器 - Scoop]]></title>
+      <url>/2017/09/01/windows-package-manager-scoop/</url>
+      <content type="html"><![CDATA[<p>提起包管理器肯定是想起了 <code>Linux</code> 下的 <code>yum</code>, <code>apt-get</code>, <code>pacman</code> 之流 但是其实Windows下面也是有包管理器的</p>
+<a id="more"></a>
+<h1 id="Scoop"><a href="#Scoop" class="headerlink" title="Scoop"></a>Scoop</h1><p>GitHub: <a href="https://github.com/lukesampson/scoop" target="_blank" rel="noopener">链接</a><br>官方网站: <a href="https://scoop.sh" target="_blank" rel="noopener">链接</a></p>
+<h2 id="安装方法"><a href="#安装方法" class="headerlink" title="安装方法"></a>安装方法</h2><p>安装方法挺简单的 直接打开 PowerShell 然后输入<br><figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">iex (<span class="built_in">new-object</span> net.webclient).downloadstring(<span class="string">'https://get.scoop.sh'</span>)</span><br></pre></td></tr></table></figure></p>
+<p>确保你的PowerShell版本在3.0以上</p>
+<h2 id="安装软件"><a href="#安装软件" class="headerlink" title="安装软件"></a>安装软件</h2><figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">scoop install nodejs</span><br></pre></td></tr></table></figure>
+<p>然后scoop就会去搜索nodejs并自动下载安装</p>
+<h3 id="打开拓展库开关"><a href="#打开拓展库开关" class="headerlink" title="打开拓展库开关"></a>打开拓展库开关</h3><p>官方其实也提供了一些额外的包 例如 <code>Oracle Java</code> 甚至有提供 <code>jetbrains-toolbox</code><br>要使用拓展库 你只需要<br><figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">scoop bucket add extras</span><br></pre></td></tr></table></figure></p>
+<blockquote>
+<p>确保你已经装了git 如果没有安装请 scoop install git</p>
+</blockquote>
+]]></content>
+      
+        <categories>
+            
+            <category> Windows </category>
+            
+        </categories>
+        
+        
+        <tags>
+            
+            <tag> Windows </tag>
+            
+            <tag> Package Manager </tag>
+            
+        </tags>
+        
+    </entry>
+    
+    <entry>
+      <title><![CDATA[CurseForge 整合包格式研究]]></title>
+      <url>/2017/08/16/curseforge-minecraft-modpack-format/</url>
+      <content type="html"><![CDATA[<p>最近在写启动器关于curseforge整合包的导入 然后研究了下如何把curseforge的整合包转换为classic的整合包</p>
+<a id="more"></a>
+<p>首先来看<code>manifest.json</code>中的对于filed和定义<br><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    "manifestType": "minecraftModpack",   // manifest类型</span><br><span class="line">    "manifestVersion": 1,  // manifest版本</span><br><span class="line">    "name": "Test Package",  // 整合包名称</span><br><span class="line">    "version": "1.0.0",      // 整合包版本</span><br><span class="line">    "author": "Indexyz",     // 整合包作者</span><br><span class="line">    "overrides": "overrides"，  // 重载文件夹</span><br><span class="line">    "minecraft": &#123;  // Minecraft相关信息</span><br><span class="line">        "version": "1.10.2", // 关于Minecraft的版本</span><br><span class="line">        "modLoaders": [&#123; // mod加载器 定义类似forge版本的信息</span><br><span class="line">             "id": "forge-12.18.3.2422",    // 定义forge版本</span><br><span class="line">             "primary": true    // 是否主要</span><br><span class="line">        &#125;]</span><br><span class="line">    &#125;,</span><br><span class="line">    "files": [&#123;      // 定义mods文件</span><br><span class="line">        "projectID": 228404,    // curseforge上的项目ID</span><br><span class="line">        "fileID": 2392124,      // curseforge上项目的文件ID</span><br><span class="line">        "required": true        // 是否需要</span><br><span class="line">    &#125;]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h2 id="下载地址"><a href="#下载地址" class="headerlink" title="下载地址"></a>下载地址</h2><p>curseforge的mod下载地址是如下格式<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">minecraft.curseforge.com/projects/&#123;项目名称&#125;/files/&#123;文件ID&#125;/download</span><br></pre></td></tr></table></figure></p>
+<h3 id="关于项目名的获取"><a href="#关于项目名的获取" class="headerlink" title="关于项目名的获取"></a>关于项目名的获取</h3><p>目前有个curseforge的API<br>访问<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">https://curse.mcdev.se/project/id/&#123;项目ID&#125;</span><br></pre></td></tr></table></figure></p>
+<p>可以在返回的payload中获取到项目的base url<br>在现在 你可以通过项目的Id去<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">https://curse.mcdev.se/files/project/&#123;项目ID&#125;</span><br></pre></td></tr></table></figure></p>
+<p>获取到全部的文件列表</p>
+<h2 id="Overrides"><a href="#Overrides" class="headerlink" title="Overrides"></a>Overrides</h2><p>整合包的Overrides是一个文件夹 由mainfest的 overrides定义 在相应的文件夹中 主要是将里面内容覆盖(加入) .minecraft 当中</p>
+<p>其中也有可能包含不在curseforge控制下的mod</p>
+]]></content>
+      
+        <categories>
+            
+            <category> Minecraft </category>
+            
+        </categories>
+        
+        
+        <tags>
+            
+            <tag> Minecraft </tag>
+            
+            <tag> CurseForge </tag>
+            
+        </tags>
+        
+    </entry>
+    
+    <entry>
+      <title><![CDATA[Authlib 使用教程]]></title>
+      <url>/2017/08/09/authlib-usage/</url>
+      <content type="html"><![CDATA[<p>总所周知 Minecraft 使用了被称为 <code>Yggdrasil</code>  的正版认证系统 实现了在对等情况下的身份认证</p>
+<a id="more"></a>
+<p>但是在开启了离线模式的服务器中 也有着许多的身份认证方式 例如使用 <code>AuthMe</code> 或者 <code>CrazyLogin</code> 之类的登陆插件</p>
+<p>但是这些插件对与Mod开发者并不友好 在某些使用了 <code>FakePlayer</code> 的环境下会把假人也当为玩家 这时候这个假人的各种操作就炸了</p>
+<p>有没有解决这些问题的登陆方式呢 那当然是有的啦 这就是 <a href="https://github.com/to2mbn/authlib-agent" target="_blank" rel="noopener">authlib</a></p>
+<h2 id="原理"><a href="#原理" class="headerlink" title="原理"></a>原理</h2><p>通过对 <code>Java字节码</code> 的修改 将 <code>Mojang</code> 的请求重定向到自己的认证服务器</p>
+<h3 id="Identity-和-Authlib-的-Agent-的区别"><a href="#Identity-和-Authlib-的-Agent-的区别" class="headerlink" title="Identity 和 Authlib 的 Agent 的区别"></a>Identity 和 Authlib 的 Agent 的区别</h3><p>大体构建相同 都是使用自己的API Server重定向请求<br>Identity最主要的特点是开箱即用 这点比官方的Authlib要好<br>事实上我和Authlib作者聊过 在未来可能会规范API的路由<br>有可能 <del>(这个Flag立的)</del> 我会在未来的某个时候完全重写Identity也不一定 咳咳扯远了</p>
+<h2 id="使用"><a href="#使用" class="headerlink" title="使用"></a>使用</h2><h3 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h3><p>前提环境是 <code>Nodejs</code> 我们可以使用 <a href="https://github.com/creationix/nvm" target="_blank" rel="noopener">NVM</a> 来方便的进行Nodejs的安装<br>数据库环境需要 <code>MongoDB</code> 和 <code>Redis</code> 这两个环境的安装在互联网上已经很多了 这里不在讲述 </p>
+<blockquote>
+<p>注意<br>MongoDB 请不要在没有设置账户验证的情况下将端口开放到公网 就算是设定了账户认证最好也不要开放到公网<br>Redis在不开放到公网的情况下建议设置强密码加密 </p>
+</blockquote>
+<p>这时候就可以通过Git获取最新的源代码安装了<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">git <span class="built_in">clone</span> -b reload https://github.com/Indexyz/Identity.git</span><br><span class="line">npm install</span><br><span class="line">// Configure your settings <span class="keyword">in</span> config.js</span><br><span class="line">npm run start</span><br></pre></td></tr></table></figure></p>
+<p>这时候访问你的localhost:3000<br>你就成功了</p>
+<h3 id="使用Docker安装"><a href="#使用Docker安装" class="headerlink" title="使用Docker安装"></a>使用Docker安装</h3><p>Docker运行应该是最方便的运行方式了 他可以方便快捷的管理每个服务<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">docker run -d -v /data/identity/db:/data/db --name MongoDB-Identity mongo</span><br><span class="line">docker run -d --name Redis-Identity redis</span><br><span class="line">docker run --link MongoDB-Identity:mongo --link Redis-Identiy:redis \</span><br><span class="line">    # -e ENV_KEY=ENV_VALUE</span><br><span class="line">    -p 80:3000 indexyz/identity</span><br></pre></td></tr></table></figure></p>
+<p>其中的 <code>ENV_KEY</code> 和 <code>ENV_VALUE</code> 可以在 <a href="https://github.com/Indexyz/Identity/wiki/Environment" target="_blank" rel="noopener">Identity Wiki-Environment</a> 看到<br>然后访问本地的80端口 你就可以看到Identity的界面了</p>
+<h2 id="和Authlib-agent进行配合"><a href="#和Authlib-agent进行配合" class="headerlink" title="和Authlib-agent进行配合"></a>和Authlib-agent进行配合</h2><p>使用我修改过的 <a href="https://github.com/Indexyz/authlib-agent" target="_blank" rel="noopener">authlib-agent</a> 修改其中的链接然后进行打包<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">git <span class="built_in">clone</span> https://github.com/Indexyz/authlib-agent</span><br><span class="line">nano configure.sh            <span class="comment"># 修改 AGENT_API_ROOT 和 AGENT_SKIN_DOMAINS</span></span><br><span class="line">sh build.sh</span><br></pre></td></tr></table></figure></p>
+<p>运行之后你会在根目录下见到 <code>authlibagent.jar</code> 这就是打包出来的jar了<br>如果你想不接入自己的 Identity 可以选择使用 <a href="http://authentication.mcdev.se/" target="_blank" rel="noopener">官方服务器</a><br>这是他的<a href="https://public.hyperworld.xyz/Gamer/Minecraft/AuthLib/authlibagent.jar" target="_blank" rel="noopener">AuthlibAgent.jar</a></p>
+]]></content>
+      
+        <categories>
+            
+            <category> Minecraft </category>
+            
+        </categories>
+        
+        
+        <tags>
+            
+            <tag> Minecraft </tag>
+            
+            <tag> Game </tag>
+            
+            <tag> Usage </tag>
+            
+        </tags>
+        
+    </entry>
+    
+    <entry>
+      <title><![CDATA[使用 SaltStack 进行集群管理]]></title>
+      <url>/2017/08/09/how-to-use-saltstack/</url>
+      <content type="html"><![CDATA[<p>Saltstack 是一个使用 Python 编写的开源项目 扩展性很好 可以方便快速的管理大量服务器 它使用了 ZeroMQ 消息队列实现服务端之间的秒级通讯</p>
+<a id="more"></a>
+<blockquote>
+<p>实在是厌倦了对大量服务器日复一日的重复操作。尤其是在虚拟化的时代，系统的每个组件都有很多个相同的节点在运行，更让重复的次数再乘以N。 当我发现Salt的时候，我的眼前一亮：这正是我所需要的东西。</p>
+</blockquote>
+<h2 id="始"><a href="#始" class="headerlink" title="始"></a>始</h2><p>我现在在使用 Saltstack (以下简称salt) 进行我的服务管理 因为我的有些服务并不能 Docker 化而是要统一部署和管理 (比如各个Rancher的Node管理什么的) </p>
+<h3 id="概念"><a href="#概念" class="headerlink" title="概念"></a>概念</h3><p>salt 在部署上可分为 <code>master</code> 和 <code>minion</code> master 负责下发指令和配置文件之类的消息 minion 负责执行命令并返回消息</p>
+<p>salt 提供了文件配置和命令行管理两种主机管理方式</p>
+<p>salt 在配置文件的储存方式上使用了便于读写的 <a href="https://zh.wikipedia.org/wiki/YAML" target="_blank" rel="noopener"><code>YAML</code></a> YAML 主要使用了空格和缩进来表达语义 上手也挺快的 看完 Wikipedia 上的介绍就基本上可以使用 YAML 了</p>
+<h4 id="Grains"><a href="#Grains" class="headerlink" title="Grains"></a>Grains</h4><p><code>grains</code> 相当于各个节点独立的配置文件 </p>
+<p>储存在每个节点的 <code>/etc/salt/grains</code> 当中 使用 <code>YAML</code> 格式储存</p>
+<h4 id="Salt-文件系统"><a href="#Salt-文件系统" class="headerlink" title="Salt 文件系统"></a>Salt 文件系统</h4><p>Salt 中的文件以 <code>salt://</code> 开头 指 saltstack 主目录(默认为<code>/srv/salt</code> 可在 master 的设定中更改)的相对路径 </p>
+<h3 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h3><h4 id="Salt-Bootstrap"><a href="#Salt-Bootstrap" class="headerlink" title="Salt Bootstrap"></a>Salt Bootstrap</h4><p>salt官方有提供一个通用的<br><a href="https://docs.saltstack.com/en/latest/topics/tutorials/salt_bootstrap.html" target="_blank" rel="noopener">安装脚本</a><br> 通常来说 我们只需要<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">curl -L http://bootstrap.saltstack.org | sudo sh -s -- -M -N  <span class="comment"># 仅安装Master</span></span><br><span class="line">wget -O - http://bootstrap.saltstack.org | sudo sh            <span class="comment"># 安装 Minion</span></span><br></pre></td></tr></table></figure></p>
+<h4 id="包管理安装"><a href="#包管理安装" class="headerlink" title="包管理安装"></a>包管理安装</h4><p>salt 在各个 Linux 发行版的软件包管理器中应该都提供了现成的软件包<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">apt-get install salt-master         <span class="comment"># Ubuntu</span></span><br><span class="line">yum install salt-master             <span class="comment"># Centos, require epel</span></span><br></pre></td></tr></table></figure></p>
+<h4 id="修改配置文件"><a href="#修改配置文件" class="headerlink" title="修改配置文件"></a>修改配置文件</h4><p>在 minion 端执行<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sed -i <span class="string">'s/#master: salt/master: Master主控IP/g'</span> /etc/salt/minion</span><br><span class="line">systemctl restart salt-minion</span><br></pre></td></tr></table></figure></p>
+<h4 id="接受Key"><a href="#接受Key" class="headerlink" title="接受Key"></a>接受Key</h4><p>salt 使用AES加密消息来保障信息传输的安全性 因此 master 首先应该接受 minion 的密匙才能完成配对<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">salt-key -L</span><br></pre></td></tr></table></figure></p>
+<p>你应该可以看到如下提示消息<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Accepted Keys:</span><br><span class="line">Denied Keys:</span><br><span class="line">Unaccepted Keys:</span><br><span class="line">salt-minion-1</span><br><span class="line">Rejected Keys:</span><br></pre></td></tr></table></figure></p>
+<p>使用 以下指令接受 <code>salt-minion-1</code> 的密匙<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">salt-key -a salt-minion-1</span><br></pre></td></tr></table></figure></p>
+<p>当然 你也可以 用以下指令接受全部的密匙<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">salt-key -A</span><br></pre></td></tr></table></figure></p>
+<h2 id="开始使用"><a href="#开始使用" class="headerlink" title="开始使用"></a>开始使用</h2><h3 id="下发指令"><a href="#下发指令" class="headerlink" title="下发指令"></a>下发指令</h3><h4 id="常用指令"><a href="#常用指令" class="headerlink" title="常用指令"></a>常用指令</h4><h5 id="测试所有节点的连通性"><a href="#测试所有节点的连通性" class="headerlink" title="测试所有节点的连通性"></a>测试所有节点的连通性</h5><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">salt <span class="string">'*'</span> test.ping</span><br></pre></td></tr></table></figure>
+<h5 id="删除已离线的-minion"><a href="#删除已离线的-minion" class="headerlink" title="删除已离线的 minion"></a>删除已离线的 minion</h5><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">salt-run manage.down removekeys=True</span><br></pre></td></tr></table></figure>
+<h5 id="测试网络连通性"><a href="#测试网络连通性" class="headerlink" title="测试网络连通性"></a>测试网络连通性</h5><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">salt <span class="string">'*'</span> cmd.run <span class="string">'ping google.com -c 4'</span></span><br></pre></td></tr></table></figure>
+<h4 id="Minion选择器"><a href="#Minion选择器" class="headerlink" title="Minion选择器"></a>Minion选择器</h4><p>在上面的几个常用的指令中 使用了 <code>salt &#39;*&#39;</code> 来选择所有节点 那么 还有没有别的选择方式么 那当然是有的</p>
+<h5 id="根据节点ID选择"><a href="#根据节点ID选择" class="headerlink" title="根据节点ID选择"></a>根据节点ID选择</h5><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">salt <span class="string">'salt-minion-1'</span> test.ping</span><br></pre></td></tr></table></figure>
+<h5 id="根据-grains-是否存在选择"><a href="#根据-grains-是否存在选择" class="headerlink" title="根据 grains 是否存在选择"></a>根据 grains 是否存在选择</h5><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">salt -G <span class="string">'flag:1'</span> test.ping           <span class="comment"># Flag 是一个为 1 的 grains属性</span></span><br></pre></td></tr></table></figure>
+<p>因为 grains 预处理了一些变量 所以我们可以<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">salt -G <span class="string">'os:CentOS'</span> test.ping        <span class="comment"># 在所有 CentOS 系统的 minion 上执行</span></span><br></pre></td></tr></table></figure></p>
+<h4 id="常用Execution"><a href="#常用Execution" class="headerlink" title="常用Execution"></a>常用Execution</h4><p>官方其实有个<br><a href="https://docs.saltstack.com/en/latest/ref/modules/all/index.html" target="_blank" rel="noopener">Execution的列表</a><br>在这也讲一下常用的几个常用Execution好了</p>
+<h5 id="运行命令"><a href="#运行命令" class="headerlink" title="运行命令"></a>运行命令</h5><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">salt <span class="string">'*'</span> cmd.run <span class="string">'&#123;command&#125;'</span>        <span class="comment"># 替换 Command 为你的命令</span></span><br></pre></td></tr></table></figure>
+<h5 id="服务操作"><a href="#服务操作" class="headerlink" title="服务操作"></a>服务操作</h5><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">salt <span class="string">'*'</span> service.status &#123;service&#125;   <span class="comment"># 查看服务状态</span></span><br><span class="line">salt <span class="string">'*'</span> service.restart &#123;service&#125;  <span class="comment"># 重启服务</span></span><br><span class="line">salt <span class="string">'*'</span> service.start &#123;service&#125;    <span class="comment"># 启动服务</span></span><br><span class="line">salt <span class="string">'*'</span> service.stop &#123;service&#125;     <span class="comment"># 停止服务</span></span><br></pre></td></tr></table></figure>
+<h5 id="文件分发"><a href="#文件分发" class="headerlink" title="文件分发"></a>文件分发</h5><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">salt <span class="string">'*'</span> cp.get_file salt://&#123;file&#125; /to/path/&#123;file&#125;</span><br></pre></td></tr></table></figure>
+<p>追加到文件尾</p>
+<pre><code class="bash">salt <span class="string">'*'</span> file.append /to/file <span class="string">"{data}"</span>
+</code></pre>
+]]></content>
+      
+        <categories>
+            
+            <category> Linux </category>
+            
+        </categories>
+        
+        
+        <tags>
+            
+            <tag> Linux </tag>
+            
+            <tag> Operation </tag>
+            
+        </tags>
+        
+    </entry>
+    
+    <entry>
+      <title><![CDATA[在Linux上安装并且运行求生之路2服务器]]></title>
+      <url>/2017/08/09/how-to-run-left-4-dead-2-server-in-linux/</url>
+      <content type="html"><![CDATA[<p><del>话说求生火了这么久 怎么还不出3啊233</del></p>
+<a id="more"></a>
+<blockquote>
+<p>求生之路是一个多人联机的第一人称射击游戏 求生的社区服务器比较多 但是国内的 某些服务器 有的时候会被别人恶意攻击 这时候自建一个社区服务器是一个不错的选择</p>
+</blockquote>
+<h2 id="手动安装"><a href="#手动安装" class="headerlink" title="手动安装"></a>手动安装</h2><h3 id="依赖安装"><a href="#依赖安装" class="headerlink" title="依赖安装"></a>依赖安装</h3><p>在安装开始前 你需要</p>
+<ul>
+<li>一个含有 <code>Left 4 Dead 2</code> 的 <code>Steam</code> 账号 (可选)</li>
+<li>一台服务器 要求有 <code>10GB</code> 以上的硬盘 推荐 <code>2GB</code> 以上的内存</li>
+</ul>
+<h4 id="Debian-Ubuntu"><a href="#Debian-Ubuntu" class="headerlink" title="Debian / Ubuntu"></a>Debian / Ubuntu</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">sudo dpkg --add-architecture i386</span><br><span class="line">sudo apt-get update &amp;&amp; sudo apt-get upgrade</span><br><span class="line"><span class="comment"># 64 位</span></span><br><span class="line">sudo apt-get install mailutils postfix curl lib32gcc1 libstdc++6 </span><br><span class="line">libstdc++6:i386</span><br><span class="line"><span class="comment"># 32位</span></span><br><span class="line">sudo apt-get install mailutils postfix curl libstdc++6</span><br></pre></td></tr></table></figure>
+<h4 id="CentOS-RedHat"><a href="#CentOS-RedHat" class="headerlink" title="CentOS / RedHat"></a>CentOS / RedHat</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">yum install epel-release -y</span><br><span class="line"><span class="comment"># 64 位</span></span><br><span class="line">yum install mailx postfix curl glibc.i686 libstdc++ libstdc++.i686</span><br><span class="line"><span class="comment"># 32位</span></span><br><span class="line">yum install mailx postfix curl libstdc++</span><br></pre></td></tr></table></figure>
+<h3 id="安装SteamCMD"><a href="#安装SteamCMD" class="headerlink" title="安装SteamCMD"></a>安装SteamCMD</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">mkdir Steam</span><br><span class="line">mkdir left4dead2</span><br><span class="line"><span class="built_in">cd</span> Steam</span><br><span class="line">wget http://media.steampowered.com/installer/steamcmd_linux.tar.gz</span><br><span class="line"></span><br><span class="line">tar -xvzf steamcmd_linux.tar.gz</span><br><span class="line">rm steamcmd_linux.tar.gz</span><br></pre></td></tr></table></figure>
+<h3 id="通过SteamCMD安装服务器"><a href="#通过SteamCMD安装服务器" class="headerlink" title="通过SteamCMD安装服务器"></a>通过SteamCMD安装服务器</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./steamcmd.sh</span><br></pre></td></tr></table></figure>
+<p>第一次运行会自带下载安装升级<br>安装完出现 <code>Steam&gt;</code> 的时候输入<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">login anonymous</span><br><span class="line">force_install_dir ~/left4dead2</span><br><span class="line">app_update 222860 validate</span><br></pre></td></tr></table></figure></p>
+<p>当你看见</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Success! App &apos;222860&apos; fully installed.</span><br></pre></td></tr></table></figure>
+<p>的时候 服务器便已经安装在 <code>~/left4dead2</code> 了<br>输入 <code>quit</code> 来退出Steam CMD (当然你可以直接 <code>^C</code> )</p>
+<h3 id="配置服务器"><a href="#配置服务器" class="headerlink" title="配置服务器"></a>配置服务器</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cd</span> ~/left4dead2/left4dead2/cfg</span><br></pre></td></tr></table></figure>
+<p>这时候<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">nano server.cfg</span><br></pre></td></tr></table></figure></p>
+<p>我使用的配置文件为<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">hostname &quot;Indexyz Veritas&quot;     // 服务器名</span><br><span class="line">sv_voiceenable 1               // 开启语音</span><br><span class="line">sv_steamgroup &quot;Group&quot;          // 设置为 ID 为 Group 的组服务器 </span><br><span class="line">Steam组管理员可以查询到组ID</span><br><span class="line">sv_steamgroup_exclusive 1      //将服务器设为Steam组私有</span><br></pre></td></tr></table></figure></p>
+<h3 id="服务器启动"><a href="#服务器启动" class="headerlink" title="服务器启动"></a>服务器启动</h3><p>创建一个 <code>run</code> 文件并且给它可执行权限<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cd</span> ~/left4dead2</span><br><span class="line">touch run</span><br><span class="line">chmod +x run</span><br></pre></td></tr></table></figure></p>
+<p>现在可以编辑启动文件<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">nano run</span><br><span class="line"><span class="comment"># 输入</span></span><br><span class="line">./srcds_run -game left4dead2 +<span class="built_in">exec</span> server.cfg</span><br></pre></td></tr></table></figure></p>
+<p>启动器服务器只需要 <code>./run</code></p>
+<p>推荐使用 <code>tmux</code> 来管理会话 否则关闭终端之后服务器将退出 关于 <code>tmux</code><br>请自行搜索引擎</p>
+<h2 id="自动安装"><a href="#自动安装" class="headerlink" title="自动安装"></a>自动安装</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">adduser l4d2server</span><br><span class="line">su - l4d2server</span><br><span class="line">wget http://gameservermanagers.com/dl/l4d2server</span><br><span class="line">chmod +x l4d2server</span><br></pre></td></tr></table></figure>
+<p>现在<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">./l4d2server install</span><br><span class="line"><span class="comment"># 会询问服务器信息</span></span><br></pre></td></tr></table></figure></p>
+<p>安装完成之后<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./l4d2server start</span><br></pre></td></tr></table></figure></p>
+<p>以后每次需要操作服务器的时候只需要<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">su - l4d2server</span><br><span class="line">./l4d2server <span class="built_in">command</span></span><br></pre></td></tr></table></figure></p>
+<h2 id="其他的坑"><a href="#其他的坑" class="headerlink" title="其他的坑"></a>其他的坑</h2><h3 id="无法链接-或者-无法找到服务器"><a href="#无法链接-或者-无法找到服务器" class="headerlink" title="无法链接 或者 无法找到服务器"></a>无法链接 或者 无法找到服务器</h3><p>尝试允许l4d2服务器数据包<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">iptables -A INPUT -p udp- m udp --sport 4380 --dport 1025:65355 -j ACCEPT</span><br><span class="line">iptables -A INPUT -p udp -m udp --sport 10999 --dport 1025:65355 -j ACCEPT</span><br><span class="line">iptables -A INPUT -p udp -m udp --sport 7777 --dport 1025:65355 -j ACCEPT</span><br><span class="line">iptables -A INPUT -p udp -m udp --sport 27015 --dport 1025:65355 -j ACCEPT</span><br><span class="line">service iptables save</span><br></pre></td></tr></table></figure></p>
+]]></content>
+      
+        <categories>
+            
+            <category> Game </category>
+            
+        </categories>
+        
+        
+        <tags>
+            
+            <tag> Game </tag>
+            
+            <tag> Left 4 Dead 2 </tag>
+            
+        </tags>
+        
+    </entry>
+    
+    <entry>
+      <title><![CDATA[使用 proxychains 加速国外资源访问]]></title>
+      <url>/2017/08/09/how-to-use-proxychains-to-speedup-network/</url>
+      <content type="html"><![CDATA[<p>众所周知, 我国访问国外资源的时候网络可能有些问题, 最近我在阿里云的服务器上 <code>clone</code> <code>GitHub</code> 的项目的时候 速度十分之慢 (10+KB/s) 因此搜索了一下 发现了 <code>proxychains</code> 这个神器</p>
+<a id="more"></a> 
+<blockquote>
+<p>本文不讨论如何跨越防火长城</p>
+</blockquote>
+<h2 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">git <span class="built_in">clone</span> https://github.com/rofl0r/proxychains-ng.git</span><br><span class="line"><span class="built_in">cd</span> proxychains-ng</span><br><span class="line">./configure</span><br><span class="line">make &amp;&amp; make install</span><br><span class="line">cp ./src/proxychains.conf /etc/proxychians.conf</span><br><span class="line"><span class="built_in">cd</span> .. </span><br><span class="line">rm -rf proxychains-ng</span><br></pre></td></tr></table></figure>
+<h2 id="配置"><a href="#配置" class="headerlink" title="配置"></a>配置</h2><blockquote>
+<p>使用这个配置的话是默认走纸飞机的</p>
+</blockquote>
+<p>配置文件位于 <code>/etc/proxychains.conf</code> 使用 <code>nano</code> 或者 <code>vim</code> 打开<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">strict_chain</span><br><span class="line">proxy_dns </span><br><span class="line">remote_dns_subnet 224</span><br><span class="line">tcp_read_time_out 15000</span><br><span class="line">tcp_connect_time_out 8000</span><br><span class="line">localnet 127.0.0.0/255.0.0.0</span><br><span class="line">quiet_mode</span><br><span class="line"></span><br><span class="line">[ProxyList]</span><br><span class="line">socks5  127.0.0.1 1080</span><br></pre></td></tr></table></figure></p>
+<h2 id="使用"><a href="#使用" class="headerlink" title="使用"></a>使用</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">proxychains4 -q `Command`</span><br></pre></td></tr></table></figure>
+<p>请把 <code>Command</code> 替换为你的命令</p>
+<h3 id="已知问题"><a href="#已知问题" class="headerlink" title="已知问题"></a>已知问题</h3><p>在某些程序下不生效 我在用 <code>yaourt</code> 构建 <code>gdrive</code> 的时候遇到了这个问题</p>
+<p>解决方法未知 因为这个方法是使用依赖库的方法注入 所以很多时候都有这个问题<br>(<code>steamcmd</code> 貌似也这样)</p>
+]]></content>
+      
+        <categories>
+            
+            <category> Proxy </category>
+            
+        </categories>
+        
+        
+        <tags>
+            
+            <tag> Linux </tag>
+            
+            <tag> Proxy </tag>
+            
+        </tags>
+        
+    </entry>
+    
+    <entry>
+      <title><![CDATA[又将Typecho换到了GitHub上的Jekyll]]></title>
+      <url>/2017/08/09/transfer-typecho-to-jekyll/</url>
+      <content type="html"><![CDATA[<h2 id="再次更换博客的构架"><a href="#再次更换博客的构架" class="headerlink" title="再次更换博客的构架"></a>再次更换博客的构架</h2><a id="more"></a>
+<h3 id="原因"><a href="#原因" class="headerlink" title="原因?"></a>原因?</h3><p>自建 <code>Typecho</code> 的环境太过麻烦了 在DigitalOcean上跑一个512MB的机子也带不动数据库加PHP<br>(而且 <code>MySQL</code> 的吃内存业界皆知 512MB的内存可能都带不动)</p>
+<h3 id="遇到的困难"><a href="#遇到的困难" class="headerlink" title="遇到的困难"></a>遇到的困难</h3><ul>
+<li><p><code>GitHub Page</code> 不支持自定义域名的Https证书<br>对我这种有Https强迫症的人来说简直是个末日</p>
+</li>
+<li><p>静态页面评论贼尴尬</p>
+</li>
+</ul>
+<h3 id="解决方法"><a href="#解决方法" class="headerlink" title="解决方法"></a>解决方法</h3><ol>
+<li><ul>
+<li><p>使用自己服务器上的 <code>Nginx</code> 反向代理 <code>GitHub Page</code></p>
+<p>这种方法是我现在在使用的 谁叫我服务器在吃灰呢</p>
+<p><code>Nginx</code> 配置文件 <a href="https://gist.github.com/taddev/8872330" target="_blank" rel="noopener">GitHub Gist</a></p>
+</li>
+<li><p>听说 使用 <code>CloudFlare</code> 的服务可以反向代理 <code>GitHub Page</code> 实现Https</p>
+<p>这种方法的好处还是蛮多的 比如不需要自己搞Https证书 但是需要切换域名的NS到<br> CloudFlare所以我没有使用</p>
+</li>
+</ul>
+</li>
+<li><p>使用 <code>Disqus</code></p>
+<p>在多说倒闭了之后各种静态页面的层出不穷 我使用了Disqus作为评论系统<br>虽然他在中国大陆可能被墙</p>
+</li>
+</ol>
+<h2 id="Jekyll-相关"><a href="#Jekyll-相关" class="headerlink" title="Jekyll 相关"></a>Jekyll 相关</h2><h3 id="主题"><a href="#主题" class="headerlink" title="主题"></a>主题</h3><p>使用了 <code>码志</code> 的 <a href="https://github.com/mzlogin/mzlogin.github.io" target="_blank" rel="noopener">Jekyll主题</a><br>自己进行了一些微小的改动</p>
+<h3 id="遇见的困难"><a href="#遇见的困难" class="headerlink" title="遇见的困难"></a>遇见的困难</h3><p>也不知道 算不算是一个困难<br>在我的笔记本 ( <code>Arch Linux</code> )上从 <code>Aru</code> 安装了Ruby之后安装了环境无法启动 </p>
+<p>最后使用了 <code>~/.gem/ruby/2.4.0/gems/</code> 这种路径手动启动</p>
+]]></content>
+      
+        <categories>
+            
+            <category> Blog </category>
+            
+        </categories>
+        
+        
+        <tags>
+            
+            <tag> Blog </tag>
+            
+        </tags>
+        
+    </entry>
+    
+    <entry>
+      <title><![CDATA[PackageTracker - An Telegram Package Tracker Bot]]></title>
+      <url>/2017/08/09/telegram-package-tracker/</url>
+      <content type="html"><![CDATA[<blockquote>
+<p>近几日迷上了使用 <code>Telegram</code> 把我的RSS订阅什么的都移到Telegram上去了, 然而最近网购了一波发现快递查询也是个很烦人的事情 于是就写了个这个Bot</p>
+</blockquote>
+<a id="more"></a>
+<h3 id="开发原因"><a href="#开发原因" class="headerlink" title="开发原因"></a>开发原因</h3><p>原因嘛…… 那就是 <code>imlonghao</code> 的 <a href="https://ifttt.imlonghao.com/" target="_blank" rel="noopener">https://ifttt.imlonghao.com/</a><br>RSS快递100订阅失效了 于是自己动手写了一个</p>
+<h2 id="使用"><a href="#使用" class="headerlink" title="使用"></a>使用</h2><p>Telegram 关注 <a href="t.me/IPackageTrackerBot">PackageTracker</a><br>然后发送 <code>/new 快递单号</code> 就可以订阅快递消息 目前是10分钟检查一次更新</p>
+<h2 id="感谢"><a href="#感谢" class="headerlink" title="感谢"></a>感谢</h2><p><a href="https://github.com/coderfox/Kuaidi100API" target="_blank" rel="noopener">coderfox/Kuaidi100API</a> -<br>提供了快递100的API</p>
+]]></content>
+      
+        <categories>
+            
+            <category> Telegram </category>
+            
+        </categories>
+        
+        
+        <tags>
+            
+            <tag> Telegram </tag>
+            
+        </tags>
+        
+    </entry>
+    
+    <entry>
+      <title><![CDATA[Telegram 食用教程 - 教你如何快速成为TG大佬]]></title>
+      <url>/2017/08/09/how-to-use-telegram/</url>
+      <content type="html"><![CDATA[<blockquote>
+<p>Telegram Messenger 是一个跨平台的即时通信软件，它的客户端是自由及开放源代码软件，但是它的服务器是专有软件。用户可以相互交换加密与自析构的消息，以及照片、视频、文件，支持所有的文件类型。官方提供移动端（Android、iOS、Windows Phone）、桌面端（Windows、macOS、Linux）和网页端（官方在线版）应用；同时官方开放应用程序接口，因此拥有许多第三方的客户端可供选择。  –Wikipedia CN</p>
+</blockquote>
+<a id="more"></a>
+<h2 id="始"><a href="#始" class="headerlink" title="始"></a>始</h2><h3 id="客户端的安装"><a href="#客户端的安装" class="headerlink" title="客户端的安装"></a>客户端的安装</h3><p>在Telegram的<a href="https://telegram.org/" target="_blank" rel="noopener">官方网站</a>可以下载到各种平台的安装包</p>
+<blockquote>
+<p>注意! 在中国境内因为中国长城防火墙的原因你可能会无法使用Telegram各项服务</p>
+</blockquote>
+<p>解决方法:</p>
+<ul>
+<li>挂个梯子</li>
+<li>使用我的<a href="https://tg.smartladder.link" target="_blank" rel="noopener">Telegram反向代理</a> [只能使用网页版<br>可以救急用]</li>
+</ul>
+<h3 id="汉化"><a href="#汉化" class="headerlink" title="汉化"></a>汉化</h3><p>在 <a href="https://t.me/zh_CN" target="_blank" rel="noopener">Telegram-zh_CN Project</a> 中下载相应平台的汉化文件<br>下载你相应平台的汉化文件</p>
+<h4 id="Windows"><a href="#Windows" class="headerlink" title="Windows"></a>Windows</h4><p>在设置(Settings) -&gt; 同时按住<code>Alt</code> 和 <code>Shift</code> 后点击更换语言(Change Language) /<br>或者空打<code>loadlang</code> -&gt; 打开你的汉化文件 -&gt; 确认重启Telegram </p>
+<h4 id="Android"><a href="#Android" class="headerlink" title="Android"></a>Android</h4><p>点击下载到文件上的三个小点 -&gt; 选择 使用本地化文件(Apply localization file)</p>
+<h4 id="Web"><a href="#Web" class="headerlink" title="Web"></a>Web</h4><p>自带汉化</p>
+<h3 id="常见问题"><a href="#常见问题" class="headerlink" title="常见问题"></a>常见问题</h3><p>Q: Telegram的中文字体有点小问题<br>A: 使用<a href="https://github.com/ysc3839/TGFont" target="_blank" rel="noopener">Telegram字体补丁</a></p>
+]]></content>
+      
+        <categories>
+            
+            <category> Telegram </category>
+            
+        </categories>
+        
+        
+        <tags>
+            
+            <tag> Telegram </tag>
+            
+        </tags>
+        
+    </entry>
+    
+    <entry>
+      <title><![CDATA[小米MiFlash出现remote partition table doesn't exist的解决方法]]></title>
+      <url>/2017/08/09/xiaomi-miflash-error/</url>
+      <content type="html"><![CDATA[<p>这几天在闲鱼收了个小米2S, 可以进充电界面但是不能进系统 </p>
+<p>然后果断收了啊 收过来一看可以进Fastboot 那就应该可以刷好了</p>
+<p>架好 MiFlash 然后刷MIUI5的时候却发现 </p>
+<p><code>Failed: remote: partition table doesn&#39;t exist</code>‘</p>
+<a id="more"></a>
+<p>这应该是分区的关系 在某度搜索了一下发现貌似是分区表炸了 </p>
+<p>然而我并没有一个好的分区表 这时候看了下刷机包文件中有一个<code>gpt_both0.bin</code> </p>
+<p>于是加入</p>
+<p><code>fastboot %* flash partition &quot;%~dp0images\gpt_both0.bin&quot; || @echo &quot;Flash 
+partition&quot; &amp;&amp; exit /B 1</code></p>
+<p>在刷机的 <code>flash_all.bat</code> 打开 MiFlash 重新刷机 搞定</p>
+]]></content>
+      
+        <categories>
+            
+            <category> Android </category>
+            
+        </categories>
+        
+        
+        <tags>
+            
+            <tag> Android </tag>
+            
+            <tag> Phone </tag>
+            
+        </tags>
+        
+    </entry>
+    
+    <entry>
+      <title><![CDATA[MultiMC 的简单使用教程]]></title>
+      <url>/2017/08/09/how-to-use-mulitmc/</url>
+      <content type="html"><![CDATA[<blockquote>
+<p>MultiMC 是一个免费, 开源的<a href="https://minecraft.net/zh-hans/" target="_blank" rel="noopener">Minecraft</a>启动器. 它最大的特点便是允许用户定义自己的整合包(在MMC中这个概念为 <code>instances</code>) 并且可以方便的管理他们</p>
+</blockquote>
+<a id="more"></a>
+<h2 id="基本介绍"><a href="#基本介绍" class="headerlink" title="基本介绍"></a>基本介绍</h2><p>首先来看看官网的features<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">Manage multiple instances of Minecraft at once</span><br><span class="line">Start Minecraft with a custom resolution</span><br><span class="line">Change Java<span class="string">'s runtime options (including memory options)</span></span><br><span class="line"><span class="string">Shows Minecraft'</span>s console output <span class="keyword">in</span> a color-coded window</span><br><span class="line">Kill Minecraft easily <span class="keyword">if</span> it crashes/freezes</span><br><span class="line">Custom icons and groups <span class="keyword">for</span> instances</span><br><span class="line">Forge integration (automatic installation, version downloads, mod management)</span><br><span class="line">Minecraft world management</span><br><span class="line">Import and <span class="built_in">export</span> Minecraft instances to share them with anyone</span><br><span class="line">Supports every version of Minecraft that the vanilla launcher does</span><br></pre></td></tr></table></figure></p>
+<p><em>简单的说就是个大号的启动器</em></p>
+<h3 id="下载使用"><a href="#下载使用" class="headerlink" title="下载使用"></a>下载使用</h3><p>在 <a href="https://multimc.org/" target="_blank" rel="noopener">官网</a> 中可以找到各个系统的最新下载地址<br>当然你觉得 无聊和没事找事 什么的 你可以在<br><a href="https://github.com/MultiMC/MultiMC5" target="_blank" rel="noopener">GitHub</a> 上找到最新的源代码并且自己编译安装</p>
+<blockquote>
+<p>Note: MultiMC 的官方版是强制要求正版验证的 盗版的同学请去下修改版的MMC</p>
+</blockquote>
+<p>当你下载完成之后解压缩后<br>Windows 用户 请直接打开 MultiMC.exe<br>OS X 用户请直接安装MultiMC.app<br>Linux 用户如果是选择包安装可以在系统的Dock什么的位置找到它<br>不是包安装请直接./MulitMC</p>
+<blockquote>
+<p>下文都在Windows平台上完成</p>
+<h2 id="第一次见面"><a href="#第一次见面" class="headerlink" title="第一次见面"></a>第一次见面</h2><p>部分用户在第一次启动的时候会没有中文 这种情况出现在MultiMC的旧版本<br>解决方法也很简单 重启一次启动器就好了</p>
+</blockquote>
+<p>现在第一次启动的时候有个安装界面 一路下一步就好了 请记得在第一步选择简体中文<br><img src="https://publish.indexyz.me/images/2017/01/974912626.png" alt="QQ截图20170121115953.png"></p>
+<h2 id="在开始直接我们还要…"><a href="#在开始直接我们还要…" class="headerlink" title="在开始直接我们还要…"></a>在开始直接我们还要…</h2><h3 id="添加账号"><a href="#添加账号" class="headerlink" title="添加账号"></a>添加账号</h3><p>在右上角有个配置文件 添加自己的Minecraft账号 (<code>配置文件 -&gt; 管理账号 -&gt; 添加</code>)</p>
+<p><img src="https://publish.indexyz.me/images/2017/01/1111769254.png" alt="`$60H1EXDEDMA(IVM_@3DSH.png"></p>
+<p>上图是我添加完成之后的效果</p>
+<h3 id="设置代理服务器-选做"><a href="#设置代理服务器-选做" class="headerlink" title="设置代理服务器(选做)"></a>设置代理服务器(选做)</h3><p><img src="https://publish.indexyz.me/images/2017/01/4198598707.png" alt="QQ截图20170121120524.png"></p>
+<p>因为Minecraft的源 <code>亚马逊S3</code> 在国内速度简直爆炸<br>所以我们最好通过代理服务器来下载游戏资源<br><code>设置 -&gt; 代理</code> 修改代理为你的服务器然后确定 (上图是纸飞机的默认端口)</p>
+<blockquote>
+<p>设置完代理请重启启动器来使代理生效</p>
+</blockquote>
+<h2 id="让我们开始吧"><a href="#让我们开始吧" class="headerlink" title="让我们开始吧"></a>让我们开始吧</h2><h3 id="导入一个整合包"><a href="#导入一个整合包" class="headerlink" title="导入一个整合包"></a>导入一个整合包</h3><p><code>新建 -&gt; 导入Mod整合包</code>选择你的整合包地址或者选择一个本地的整合包<br>按下OK之后便直接导入到了MMC当中了</p>
+<p><img src="https://publish.indexyz.me/images/2017/01/4269960964.png" alt="Z~`IYT{14UW)4M~~I4ZYA4.png"></p>
+<blockquote>
+<p>在第一次启动的时候获取相关文件需要较长时间 请等待 如果速度较慢建议设置代理</p>
+</blockquote>
+<h3 id="创建自己的第一个实例"><a href="#创建自己的第一个实例" class="headerlink" title="创建自己的第一个实例"></a>创建自己的第一个实例</h3><p>在 <code>新建 -&gt; 纯净Minecraft</code> 中选择一个版本 OK之后就会<br>添加这个版本的Minecraft到你的库中</p>
+<h3 id="复制实例"><a href="#复制实例" class="headerlink" title="复制实例"></a>复制实例</h3><p>在实例上右键 选择<code>复制实例</code> 可以获得当前这个实例的子实例(几乎一样)</p>
+<h3 id="创建Forge实例"><a href="#创建Forge实例" class="headerlink" title="创建Forge实例"></a>创建Forge实例</h3><p>在新建了的 纯净Minecraft 中(你也可以选择复制一份)<br>右击 实例 选择 <code>修改实例</code><br>然后按下 <code>版本 -&gt; 安装Forge</code> 选择一个你需要的Forge版本点击OK就可以安装上Forge了<br><img src="https://publish.indexyz.me/images/2017/01/4219265299.png" alt="QQ截图20170121123000.png"></p>
+]]></content>
+      
+        <categories>
+            
+            <category> Minecraft </category>
+            
+        </categories>
+        
+        
+        <tags>
+            
+            <tag> Minecraft </tag>
+            
+            <tag> Game </tag>
+            
+            <tag> Usage </tag>
+            
+        </tags>
+        
+    </entry>
+    
+    <entry>
+      <title><![CDATA[Rancher 的使用和容器的管理]]></title>
+      <url>/2017/08/09/how-to-use-rancher-to-manage-docker/</url>
+      <content type="html"><![CDATA[<blockquote>
+<p>Rancher is an open source project that provides a complete platform for<br>operating Docker in production. It provides infrastructure services such as<br>multi-host networking, global and local load balancing, and volume snapshots. It<br>integrates native Docker management capabilities such as Docker Machine and<br>Docker Swarm. It offers a rich user experience that enables devops admins to<br>operate Docker in production at large scale.<br>– GitHub</p>
+</blockquote>
+<a id="more"></a>
+<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>最近一直在找一个好用的容器管理服务, 也尝试了很多 例如<br><a href="https://github.com/gaoyangxiaozhu/DockerVI" target="_blank" rel="noopener">gaoyangxiaozhu/DockerVI</a><br>但是无一例外有很多的缺点. 例如部署困难、界面不友好、不是自由/开放源代码软件.<br>今天, 我在一个关于Docker的文章中见到了 Rancher 然后部署并且试用之后就喜欢上了它.</p>
+<h2 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h2><p><a href="http://rancher.com/" target="_blank" rel="noopener">官方网站</a><br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">docker run -d --restart=always\</span><br><span class="line">       -v /data/rancher/db:/var/lib/mysql \</span><br><span class="line">       --name rancher-server \</span><br><span class="line">       -p 8888:8080 \</span><br><span class="line">       rancher/server</span><br></pre></td></tr></table></figure></p>
+<p>只需要启动这一个容器 然后访问localhost:8888 就可以看到Rancher的界面了<br>在界面的右下角可以切换语言为简体中文</p>
+<h3 id="用户验证"><a href="#用户验证" class="headerlink" title="用户验证"></a>用户验证</h3><p>在<code>系统管理/访问控制</code>下可以进行用户的验证<br><img src="https://publish.indexyz.me/images/2017/01/3269573140.png" alt="BFBVJQ{DOH}YX)Z\])0M5$XX.png"></p>
+<p>我选择的是使用GitHub进行身份验证 按照提示生成<code>Client ID</code>和<code>Secret</code><br><img src="https://publish.indexyz.me/images/2017/01/3952703091.png" alt="QQ截图20170102011147.png"></p>
+<p>保存之后进行一次验证 验证完成之后就自动记录了进行验证的GitHub ID,<br>以后就可以用这个ID进行OAuth验证登陆了</p>
+<p><img src="https://publish.indexyz.me/images/2017/01/4151018919.png" alt="QQ截图20170102011615.png"></p>
+<h2 id="添加主机"><a href="#添加主机" class="headerlink" title="添加主机"></a>添加主机</h2><p>在<code>基础构架/主机</code>下可以见到主机列表 点击<code>添加主机</code>进行添加主机的流程<br><img src="https://publish.indexyz.me/images/2017/01/4219189877.png" alt="QQ截图20170102011943.png"></p>
+<p>使用SSH登陆到主机上 执行<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">curl -sSL get.docker.com | bash</span><br><span class="line">systemctl start docker</span><br><span class="line">systemctl <span class="built_in">enable</span> docker</span><br></pre></td></tr></table></figure></p>
+<p>来安装Docker<br>然后输入生成了的脚本安装<br>这里如果使用运行Rancher的服务器安装的话在第<code>4</code>个步骤的输入框内填入服务器的IP<br>然后你就可以在<code>基础构架/主机</code>下看到你添加的服务器了<br><img src="https://publish.indexyz.me/images/2017/01/3018941036.png" alt="QQ截图20170102012808.png"></p>
+<h2 id="运行容器"><a href="#运行容器" class="headerlink" title="运行容器"></a>运行容器</h2><p>在每个主机的最后有一个按钮可以添加容器<br><img src="https://publish.indexyz.me/images/2017/01/1644447780.png" alt="QQ截图20170102013007.png"></p>
+<p>这里以运行<code>hyalx/ssr-with-net-speeder</code>为例子 演示一下容器的运行方法<br>进行一下设置然后点击创建<img src="https://publish.indexyz.me/images/2017/01/3126909881.png" alt="QQ截图20170102013319.png"></p>
+<p>Rancher便会自动Pull下来映像并且运行</p>
+<h2 id="反向代理"><a href="#反向代理" class="headerlink" title="反向代理"></a>反向代理</h2><p>当然 如果我们要使用一个服务 有时候那么长长的一串IP和端口不是那么的美观<br>在这里我使用了Nginx来进行反向代理<br>安装Nginx (Yum 安装)<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">rpm -Uvh </span><br><span class="line">http://nginx.org/packages/centos/7/noarch/RPMS/nginx-release-centos-7-0.el7.ngx.noarch.rpm</span><br><span class="line">yum install nginx</span><br><span class="line">systemctl start nginx </span><br><span class="line">systemctl <span class="built_in">enable</span> nginx</span><br></pre></td></tr></table></figure></p>
+<p>访问IP 出现Nginx默认页面<br>在<code>cd /etc/nginx/conf.d/</code>下可以编辑默认配置文件 这里提供我的配置文件作为参考<br><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">map $http_upgrade $connection_upgrade &#123;</span><br><span class="line">    default upgrade;</span><br><span class="line">    ''      close;</span><br><span class="line">&#125;</span><br><span class="line">server &#123;</span><br><span class="line">    listen       80;</span><br><span class="line">    server_name  localhost;</span><br><span class="line"></span><br><span class="line">    location / &#123;</span><br><span class="line">        proxy_pass http://127.0.0.1:端口;</span><br><span class="line">        proxy_set_header X-Real-IP $remote_addr;</span><br><span class="line">        proxy_set_header Host $host;</span><br><span class="line">        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;</span><br><span class="line">        proxy_http_version 1.1;</span><br><span class="line">        proxy_set_header Upgrade $http_upgrade;</span><br><span class="line">        proxy_set_header Connection "upgrade";</span><br><span class="line">        sub_filter IP地址:端口 IP地址:80;</span><br><span class="line">        sub_filter_once off;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    error_page   500 502 503 504  /50x.html;</span><br><span class="line">    location = /50x.html &#123;</span><br><span class="line">        root   /usr/share/nginx/html;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<blockquote>
+<p>修改了地址请在GitHub修改应用的redict url和homepage<br>要不然每次登陆都会跳转会原来的地址</p>
+<p>因为Rancher使用了Webshock 所以和正常的反代方式有些不同</p>
+</blockquote>
+]]></content>
+      
+        <categories>
+            
+            <category> Linux </category>
+            
+        </categories>
+        
+        
+        <tags>
+            
+            <tag> Linux </tag>
+            
+            <tag> Docker </tag>
+            
+        </tags>
+        
+    </entry>
+    
+    <entry>
+      <title><![CDATA[安利 - WGestures - 一款阿姆斯克郎式旋转无敌棒的软件]]></title>
+      <url>/2017/08/09/a-great-software-wgstures/</url>
+      <content type="html"><![CDATA[<blockquote>
+<p>WGestures 是一款免费且开源的国产软件。作为一个全局的鼠标手势软件，WGestures<br>可以作用于几乎所有的 Windows 程序！你可以设置手势来执行前进、后退、关闭窗口、最大化、最小化、复制、粘贴、执行命令代码、输出文本、打开网址、运行程序、执行快捷键等等实用的操作。</p>
+</blockquote>
+<a id="more"></a>
+<h2 id="内置了高清比例-啊不对-是许多快捷方式"><a href="#内置了高清比例-啊不对-是许多快捷方式" class="headerlink" title="内置了高清比例, 啊不对 是许多快捷方式"></a>内置了高清比例, 啊不对 是许多快捷方式</h2><p>可以在多应用之间进行快捷的快捷键操作 再也不用从浏览器点到网易云去下一首/加心了<br><img src="https://publish.indexyz.me/images/2017/01/803580975.png" alt="~R0J6Y[(8]U05NQ%AN~PPRC.png"></p>
+<h2 id="可以指定程序进行快捷键操作"><a href="#可以指定程序进行快捷键操作" class="headerlink" title="可以指定程序进行快捷键操作"></a>可以指定程序进行快捷键操作</h2><p>在IDEA什么的上面用鼠标划一下直接就可以构建/重启应用 是不是很方便<br><del>而且可以在妈来的时候快速把播放器从老师们切换到正常的东西上去</del><br><img src="https://publish.indexyz.me/images/2017/01/1583153580.png" alt="QQ截图20170101015934.png"></p>
+<h2 id="触发角-摩擦边"><a href="#触发角-摩擦边" class="headerlink" title="触发角 / 摩擦边"></a>触发角 / 摩擦边</h2><p>把鼠标移动到角落上 / 在边上摩擦摩擦 就可以执行命令了 左下角弹出Win右下角返回桌面<br>鼠标的寿命又加强了不少</p>
+<hr>
+<h2 id="那么这么好用的软件-在哪里可以买到呢"><a href="#那么这么好用的软件-在哪里可以买到呢" class="headerlink" title="那么这么好用的软件 在哪里可以买到呢"></a>那么这么好用的软件 在哪里可以买到呢</h2><p><a href="http://www.yingdev.com/projects/wgestures" target="_blank" rel="noopener">官方网站</a><br><a href="https://share.weiyun.com/73e102102c144c21eafe0bddf4eb0ef3" target="_blank" rel="noopener">下载地址</a></p>
+]]></content>
+      
+        <categories>
+            
+            <category> Software </category>
+            
+        </categories>
+        
+        
+        <tags>
+            
+            <tag> Software </tag>
+            
+        </tags>
+        
+    </entry>
+    
+    <entry>
+      <title><![CDATA[Happy New Year!]]></title>
+      <url>/2017/08/09/happy-new-year-md/</url>
+      <content type="html"><![CDATA[<blockquote>
+<p>Stay young,stay simple.<br>The Year is new,but he is still old.<br>He never changes.<br>To be awesome again this New Year</p>
+</blockquote>
+]]></content>
+      
+        <categories>
+            
+            <category> Life </category>
+            
+        </categories>
+        
+        
+        <tags>
+            
+            <tag> Life </tag>
+            
+        </tags>
+        
+    </entry>
+    
+    <entry>
+      <title><![CDATA[利用 Socat 单端口转发加速TCP链接]]></title>
+      <url>/2017/08/09/use-socat-to-speed-up-tcp-link/</url>
+      <content type="html"><![CDATA[<blockquote>
+<p>有童鞋说我的Minecraft服务器链接速度很慢 我是托管在国内的Azure上的<br>既然这么说了 那我就拿 <code>Socat</code> 转发到阿里云上</p>
+</blockquote>
+<a id="more"></a>
+<h2 id="安装Socat"><a href="#安装Socat" class="headerlink" title="安装Socat"></a>安装Socat</h2><h3 id="CentOS"><a href="#CentOS" class="headerlink" title="CentOS"></a>CentOS</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yum install -y socat</span><br></pre></td></tr></table></figure>
+<h3 id="Ubuntu"><a href="#Ubuntu" class="headerlink" title="Ubuntu"></a>Ubuntu</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">apt-get update</span><br><span class="line">apt-get install -y socat</span><br></pre></td></tr></table></figure>
+<h2 id="使用"><a href="#使用" class="headerlink" title="使用"></a>使用</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">nohup socat TCP4-LISTEN:本地端口,reuseaddr,fork TCP4:远程地址:远程端口 &gt;&gt; </span><br><span class="line">/root/socat.log 2&gt;&amp;1 &amp;</span><br><span class="line">iptables -I INPUT -p tcp --dport 本地端口 -j ACCEPT</span><br><span class="line">service iptables save</span><br><span class="line">service iptables restart</span><br></pre></td></tr></table></figure>
+]]></content>
+      
+        <categories>
+            
+            <category> Linux </category>
+            
+        </categories>
+        
+        
+        <tags>
+            
+            <tag> Linux </tag>
+            
+            <tag> Proxy </tag>
+            
+            <tag> Network </tag>
+            
+        </tags>
+        
+    </entry>
+    
+    <entry>
+      <title><![CDATA[It's the end.]]></title>
+      <url>/2017/08/09/its-the-end/</url>
+      <content type="html"><![CDATA[<p>呐, 最近已经很久都没有出现了呢.</p>
+<p>最近一直忙于各种 三次元的事情 不得不说到了高二之后任何事情都已经忙里的起来. </p>
+<p>最近报了NOIP, 说不定接下来要忙一年OI 但是我也是在努力呢(那你很360度旋转无敌棒呢)<br>// 一年半之后: 初赛没过</p>
+<p>最近可能会重拾一些已经起坑了的项目 比如在天国的NMLDK 半个月没更新的Delta<br>以及和@DH的CloudsLauncher<br>// 一年后更新 这三个项目都死了 然后接了个新的项目<br>// 一年半之后: 这几个项目都死了</p>
+<p>Everythings never change. 心之所向, 身亦能至.</p>
+]]></content>
+      
+        <categories>
+            
+            <category> Life </category>
+            
+        </categories>
+        
+        
+        <tags>
+            
+            <tag> Life </tag>
+            
+        </tags>
+        
+    </entry>
+    
+    <entry>
+      <title><![CDATA[在阿里云服务器上挂载OSS储存来进行拓展]]></title>
+      <url>/2017/08/09/mount-oss-in-aliyun/</url>
+      <content type="html"><![CDATA[<blockquote>
+<p>最近有一部分文件要用到大容量的储存，然而阿里云的磁盘IO和大小我就不说什么了，这时候我看到了阿里云的OSS，搜索了一下发现可以挂载成虚拟硬盘</p>
+</blockquote>
+<a id="more"></a>
+<h2 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">wget </span><br><span class="line">https://github.com/aliyun/ossfs/releases/download/v1.79.9/ossfs_1.79.9_centos7.0_x86_64.rpm</span><br><span class="line">yum install -y ossfs_1.79.9_centos7.0_x86_64.rpm</span><br></pre></td></tr></table></figure>
+<p>写入你需要挂载的Bucket，Access Key ID 和 Access Key Secret等信息，格式如下<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">echo</span> bucketname:AccesskeyID:Accesskeysecret &gt; /etc/passwd-ossfs</span><br><span class="line">chmod 640 /etc/passwd-ossfs</span><br></pre></td></tr></table></figure></p>
+<h2 id="挂载"><a href="#挂载" class="headerlink" title="挂载"></a>挂载</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">mkdir /mnt/oss</span><br><span class="line"><span class="built_in">echo</span> <span class="string">'ossfs#bucket_name mount_point fuse _netdev,url=url,allow_other 0 0'</span> &gt;&gt; </span><br><span class="line">/etc/fstab</span><br><span class="line"><span class="comment"># 修改bucket_name mount_point url为你自己的</span></span><br><span class="line">mount -a</span><br></pre></td></tr></table></figure>
+]]></content>
+      
+        <categories>
+            
+            <category> Linux </category>
+            
+        </categories>
+        
+        
+        <tags>
+            
+            <tag> Linux </tag>
+            
+            <tag> Aliyun </tag>
+            
+        </tags>
+        
+    </entry>
+    
+    <entry>
+      <title><![CDATA[中秋快乐]]></title>
+      <url>/2017/08/09/happy-mid-autumn-festival/</url>
+      <content type="html"><![CDATA[<p>No Content</p>
+]]></content>
+      
+        <categories>
+            
+            <category> Life </category>
+            
+        </categories>
+        
+        
+        <tags>
+            
+            <tag> Life </tag>
+            
+        </tags>
+        
+    </entry>
+    
+    <entry>
+      <title><![CDATA[Hyper的使用教程以及VPN的搭建]]></title>
+      <url>/2017/08/09/how-to-use-hyper_sh/</url>
+      <content type="html"><![CDATA[<blockquote>
+<p>Hyper_是世界上第一家 Container-native 的 Docker 云服务.<br>它的核心是底层的HyperContainer虚拟化容器技术, 以及Hypernetes多租户的 Kubernetes<br>系统. 而使用方式与传统 VPS 也有很大不同.</p>
+</blockquote>
+<a id="more"></a>
+<h2 id="Hyper"><a href="#Hyper" class="headerlink" title="Hyper_"></a>Hyper_</h2><p>最近在逛V2EX的时候看见了Hyper<em>的广告<br>于是就注册了来了一发, 感觉使用体验还不错<br>如果你不介意的话, 使用我的邀请码注册, 可获得10刀奖励<br>[Hyper</em>注册链接](<a href="https://console.hyper.sh/register/invite/xMlMNKnr87Hp9pMxrKpQhKo3MJpE33FJ" target="_blank" rel="noopener">https://console.hyper.sh/register/invite/xMlMNKnr87Hp9pMxrKpQhKo3MJpE33FJ</a>)</p>
+<p>本文以在Hyper上安装CentOS容器和安装OpenVPN为例, 简单介绍下如何使用Hyper_</p>
+<h2 id="安装和配置Hyper客户端"><a href="#安装和配置Hyper客户端" class="headerlink" title="安装和配置Hyper客户端"></a>安装和配置Hyper客户端</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">wget https://hyper-install.s3.amazonaws.com/hyper-linux-x86_64.tar.gz</span><br><span class="line">tar xzf hyper-linux-x86_64.tar.gz</span><br><span class="line">chmod +x hyper</span><br><span class="line">./hyper config</span><br></pre></td></tr></table></figure>
+<h2 id="基础教程"><a href="#基础教程" class="headerlink" title="基础教程"></a>基础教程</h2><h3 id="Float-IP"><a href="#Float-IP" class="headerlink" title="Float IP"></a>Float IP</h3><p>创建一个新的Float IP</p>
+<blockquote>
+<p>Tips:<br>如果IP创建完成, 没用满一个月, 也是算你使用了一个月<br>官方回应: It’s a feature.</p>
+</blockquote>
+<p>这里的209.xxx.xxx.xxx就是分配到的IP了</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># ./hyper fip allocate 1</span></span><br><span class="line">209.xxx.xxx.xxx</span><br></pre></td></tr></table></figure>
+<p>绑定IP到名为centos的容器上<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./hyper fip attach 209.xxx.xxx.xxx centos</span><br></pre></td></tr></table></figure></p>
+<h3 id="Shadowsock安装"><a href="#Shadowsock安装" class="headerlink" title="Shadowsock安装"></a>Shadowsock安装</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">./hyper run --size s1 -d --name shadowsocks -p 8989 </span><br><span class="line">oddrationale/docker-shadowsocks -s 0.0.0.0 -p 8989 -k Indexyz -m aes-256-cfb</span><br></pre></td></tr></table></figure>
+<p>为容器绑定IP<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./hyper fip attach 209.xxx.xxx.xxx shadowsocks</span><br></pre></td></tr></table></figure></p>
+<p>这段命令创建了一个名为<code>shadowsocks</code>的容器,<br>使用的映像来自于<code>oddrationale/docker-shadowsocks</code><br>同时绑定了<code>209.xxx.xxx.xxx</code>作为容器IP<br>密码为 <code>Indexyz</code><br>端口为 <code>8989</code><br>加密方式 <code>aes-256-cfb</code></p>
+<h3 id="OpenVPN的安装"><a href="#OpenVPN的安装" class="headerlink" title="OpenVPN的安装"></a>OpenVPN的安装</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">./hyper run --size s2 -p 8080:8080 -p 22:22 --name=centos-ssh -i -t </span><br><span class="line">centos:centos6 /bin/bash</span><br></pre></td></tr></table></figure>
+<p>使用完这个会打开一个bash进程<br>在终端进行以下操作打开一个ssh链接<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">yum install passwd openssl openssh-server -y</span><br><span class="line">sed -i <span class="string">"s/UsePAM.*/UsePAM no/g"</span> /etc/ssh/sshd_config</span><br><span class="line">service sshd start</span><br><span class="line">passwd root                                           <span class="comment"># 修改Root密码</span></span><br></pre></td></tr></table></figure></p>
+<p>如果一不小心断开了容器, 请使用以下命令重新启动容器<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./hyper start -i &#123;容器ID&#125;</span><br></pre></td></tr></table></figure></p>
+<p>使用ssh链接到服务器<br>然后参考<a href="https://blog.iinde.xyz/index.php/archives/32/" target="_blank" rel="noopener">OpenVPN安装和面板的对接</a>搭建OpenVPN相关服务</p>
+<blockquote>
+<p>Tips:<br>使用GCC编译Mproxy可能出错, 使用别的CentOS6编译出来的Mproxy即可解决</p>
+</blockquote>
+]]></content>
+      
+        <categories>
+            
+            <category> Linux </category>
+            
+        </categories>
+        
+        
+        <tags>
+            
+            <tag> Linux </tag>
+            
+            <tag> Docker </tag>
+            
+        </tags>
+        
+    </entry>
+    
+    <entry>
+      <title><![CDATA[在Linux主机上扩展主机硬盘]]></title>
+      <url>/2017/08/09/how-to-use-extra-disk-in-vm/</url>
+      <content type="html"><![CDATA[<p>很多主机商的VPS中,<br>在安装完系统之后所给的硬盘大小并不是标注的硬盘大小(而且不同系统有时候大小还不一样).<br>在这种情况下就要自己扩充硬盘大小了.</p>
+<a id="more"></a>
+<p>首先登陆到服务器<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">fdisk –l</span><br></pre></td></tr></table></figure></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost ~]# fdisk -l</span><br><span class="line"></span><br><span class="line">Disk /dev/sda: 10.7 GB, 10737418240 bytes, 20971520 sectors</span><br><span class="line">Units = sectors of 1 * 512 = 512 bytes</span><br><span class="line">Sector size (logical/physical): 512 bytes / 512 bytes</span><br><span class="line">I/O size (minimum/optimal): 512 bytes / 512 bytes</span><br><span class="line">Disk label type: dos</span><br><span class="line">Disk identifier: 0x000aea04</span><br><span class="line"></span><br><span class="line">   Device Boot      Start         End      Blocks   Id  System</span><br><span class="line">/dev/sda1   *        2048     1026047      512000   83  Linux</span><br><span class="line">/dev/sda2         1026048    20971519     9972736   8e  Linux LVM</span><br><span class="line"></span><br><span class="line">Disk /dev/sdb: 42.9 GB, 42949672960 bytes, 83886080 sectors</span><br><span class="line">Units = sectors of 1 * 512 = 512 bytes</span><br><span class="line">Sector size (logical/physical): 512 bytes / 512 bytes</span><br><span class="line">I/O size (minimum/optimal): 512 bytes / 512 bytes</span><br><span class="line">Disk label type: dos</span><br><span class="line">Disk identifier: 0x789cab85</span><br><span class="line"></span><br><span class="line">   Device Boot      Start         End      Blocks   Id  System</span><br><span class="line">/dev/sdb3              63    83875364    41937651   8e  Linux LVM</span><br><span class="line"></span><br><span class="line">Disk /dev/mapper/centos-root: 9093 MB, 9093251072 bytes, 17760256 sectors</span><br><span class="line">Units = sectors of 1 * 512 = 512 bytes</span><br><span class="line">Sector size (logical/physical): 512 bytes / 512 bytes</span><br><span class="line">I/O size (minimum/optimal): 512 bytes / 512 bytes</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">Disk /dev/mapper/centos-swap: 1073 MB, 1073741824 bytes, 2097152 sectors</span><br><span class="line">Units = sectors of 1 * 512 = 512 bytes</span><br><span class="line">Sector size (logical/physical): 512 bytes / 512 bytes</span><br><span class="line">I/O size (minimum/optimal): 512 bytes / 512 bytes</span><br></pre></td></tr></table></figure>
+<p>这里的sdb3就是我们要操作的硬盘了, 我们要把它合并到/dev/centos/root</p>
+<p>首先<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">fdisk /dev/sdb3</span><br><span class="line">n</span><br><span class="line">p</span><br><span class="line">3</span><br><span class="line"><span class="comment"># 默认</span></span><br><span class="line"><span class="comment"># 默认</span></span><br><span class="line">t</span><br><span class="line">8e</span><br><span class="line">w</span><br></pre></td></tr></table></figure></p>
+<p>这时候重启一次系统, 让分区表重新加载<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">pvcreate /dev/sdb3</span><br><span class="line"><span class="comment"># 如果出现错误则是服务商已经把这个硬盘划给了另外一个Group 加上-ff参数就好了</span></span><br><span class="line">vgextend centos /dev/sdb3</span><br><span class="line">vgdisplay</span><br></pre></td></tr></table></figure></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">--- Volume group ---</span><br><span class="line">VG Name               centos</span><br><span class="line">System ID             </span><br><span class="line">Format                lvm2</span><br><span class="line">Metadata Areas        2</span><br><span class="line">Metadata Sequence No  4</span><br><span class="line">VG Access             read/write</span><br><span class="line">VG Status             resizable</span><br><span class="line">MAX LV                0</span><br><span class="line">Cur LV                2</span><br><span class="line">Open LV               2</span><br><span class="line">Max PV                0</span><br><span class="line">Cur PV                2</span><br><span class="line">Act PV                2</span><br><span class="line">VG Size               49.50 GiB</span><br><span class="line">PE Size               4.00 MiB</span><br><span class="line">Total PE              12672</span><br><span class="line">Alloc PE / Size       2424 / 9.47 GiB</span><br><span class="line">Free  PE / Size       10248 / 40.03 GiB</span><br><span class="line">VG UUID               #####</span><br></pre></td></tr></table></figure>
+<p>这时候<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">lvresize -L +40.03G /dev/centos/root</span><br></pre></td></tr></table></figure></p>
+<p>最后<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">resize2fs /dev/centos/root</span><br></pre></td></tr></table></figure></p>
+<p>如果出现以下提示的话<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">resize2fs 1.42.9 (28-Dec-2013)</span><br><span class="line">resize2fs: Bad magic number in super-block while trying to open /dev/centos/root</span><br><span class="line">Couldn&apos;t find valid filesystem superblock.</span><br></pre></td></tr></table></figure></p>
+<p>使用<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">xfs_growfs /dev/centos/root</span><br></pre></td></tr></table></figure></p>
+]]></content>
+      
+        <categories>
+            
+            <category> Linux </category>
+            
+        </categories>
+        
+        
+        <tags>
+            
+            <tag> Linux </tag>
+            
+        </tags>
+        
+    </entry>
+    
+    <entry>
+      <title><![CDATA[致开学]]></title>
+      <url>/2017/08/09/hello-study-year/</url>
+      <content type="html"><![CDATA[<blockquote>
+<p>又TM到了一年一度的开学季了</p>
+</blockquote>
+<a id="more"></a>
+<p>最近沉迷与Nodejs不能自拔, 然而还有一大堆暑假作业等着我秒.<br>希望能在新的日子里做出更加Awesome的东西</p>
+]]></content>
+      
+        <categories>
+            
+            <category> Linux </category>
+            
+        </categories>
+        
+        
+        <tags>
+            
+            <tag> Linux </tag>
+            
+        </tags>
+        
+    </entry>
+    
+    <entry>
+      <title><![CDATA[Left 4 Dead 2 服务器Rsync同步源]]></title>
+      <url>/2017/08/09/left4dead2-rsync-source/</url>
+      <content type="html"><![CDATA[<blockquote>
+<p>最近因为L4D2的某些原因(Downtown插件需要GLIBC2.15以上然而CentOS6无法提供),<br>重装了服务器, 然而阿里云上的SteamCMD老是拉不下来端,<br>于是我在国外的文件服务器上搭建了Rsync源来解决服务端问题</p>
+</blockquote>
+<a id="more"></a>
+<h2 id="使用方法"><a href="#使用方法" class="headerlink" title="使用方法"></a>使用方法</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">yum install rsync</span><br><span class="line">// 链接密码root</span><br><span class="line">rsync -avzP --delete root@rsync.indexs.lol::l4d2server serverfiles</span><br></pre></td></tr></table></figure>
+<h3 id="另"><a href="#另" class="headerlink" title="另"></a>另</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">// 阿里云安装时错误代码</span><br><span class="line">Error! App &apos;222860&apos; state is 0x402 after update job.</span><br><span class="line">CWorkThreadPool::~CWorkThreadPool: work complete queue not empty, 36 items </span><br><span class="line">discarded.</span><br><span class="line">CWorkThreadPool::~CWorkThreadPool: work processing queue not empty: 22 items </span><br><span class="line">discarded.</span><br><span class="line">// 求大佬分析</span><br></pre></td></tr></table></figure>
+]]></content>
+      
+        <categories>
+            
+            <category> Game </category>
+            
+        </categories>
+        
+        
+        <tags>
+            
+            <tag> Game </tag>
+            
+            <tag> Left 4 Dead 2 </tag>
+            
+        </tags>
+        
+    </entry>
+    
+    <entry>
+      <title><![CDATA[Python实现清屏]]></title>
+      <url>/2017/08/09/python-clean-screen/</url>
+      <content type="html"><![CDATA[<p>刚刚看busybox实现的时候看到了一个有意思的东西, 实现了清屏,<br>有时候Python又要写一些控制台应用程序的时候可能要用到, 于是放在了这里</p>
+<a id="more"></a>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> sys</span><br><span class="line">sys.stdout.write(<span class="string">"\033[H\033[J"</span>)</span><br></pre></td></tr></table></figure>
+<p>解释:<br>这是ANSI的控制字符<br>\033[H - 光标复位<br>\033[J - 清除屏幕</p>
+]]></content>
+      
+        <categories>
+            
+            <category> Python </category>
+            
+        </categories>
+        
+        
+        <tags>
+            
+            <tag> Python </tag>
+            
+        </tags>
+        
+    </entry>
+    
+    <entry>
+      <title><![CDATA[Node.js的Base64解码和编码]]></title>
+      <url>/2017/08/09/nodejs-base64/</url>
+      <content type="html"><![CDATA[<p>最近在写一个<del>开车软件</del>小程序, 用上了Base64, 然而发现 Node.js<br>中并没有相关的内置包. 看了下文档发现其实已经包含在Buffer里了</p>
+<a id="more"></a>
+<h2 id="编码"><a href="#编码" class="headerlink" title="编码"></a>编码</h2><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> str = <span class="keyword">new</span> Buffer(<span class="string">'Strings'</span>);</span><br><span class="line"><span class="built_in">console</span>.log(str.toString(<span class="string">'base64'</span>));</span><br><span class="line"><span class="comment">// -&gt; U3RyaW5ncw==</span></span><br></pre></td></tr></table></figure>
+<h2 id="解码"><a href="#解码" class="headerlink" title="解码"></a>解码</h2><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> str = <span class="keyword">new</span> Buffer(<span class="string">'U3RyaW5ncw=='</span>, <span class="string">'base64'</span>);</span><br><span class="line"><span class="built_in">console</span>.log(str.toString());</span><br><span class="line"><span class="comment">// -&gt; Strings</span></span><br></pre></td></tr></table></figure>
+]]></content>
+      
+        <categories>
+            
+            <category> Node </category>
+            
+        </categories>
+        
+        
+        <tags>
+            
+            <tag> Node </tag>
+            
+        </tags>
+        
+    </entry>
+    
+    <entry>
+      <title><![CDATA[L4D2的mod安装教程]]></title>
+      <url>/2017/08/09/how-to-install-mod-in-l4d2/</url>
+      <content type="html"><![CDATA[<blockquote>
+<p>又到了一年一度的暑假啦, 小伙伴们是不是很兴奋呐</p>
+</blockquote>
+<p>话说这次Steam夏折又剁了好多份l4d2, 最近l4d2有点上瘾. 我都把DOOM的键位改成l4d2的了<br>本教程在Steam版L4D2版本2.1.4.6上测试通过</p>
+<a id="more"></a>
+<p>##非官方Mod安装<br>这个部分的Mod估计是最常打的了</p>
+<h3 id="下载Mod的渠道"><a href="#下载Mod的渠道" class="headerlink" title="下载Mod的渠道"></a>下载Mod的渠道</h3><p>国内的<a href="http://www.l4d2.cc" target="_blank" rel="noopener">l4d2.cc</a><br>或者贴吧什么的都可以下得到</p>
+<h3 id="安装方法"><a href="#安装方法" class="headerlink" title="安装方法"></a>安装方法</h3><p>通过Steam打开安装文件夹(盗版用户请自行查找文件夹)<br><img src="https://publish.indexyz.me/images/2016/06/1455334116.png?imageView2/2/w/500" alt="l4d2-1.png"><br><img src="https://publish.indexyz.me/images/2016/06/1507364620.png?imageView2/2/w/500" alt="l4d2-2.png"></p>
+<p>打开游戏目录下的left4dead2\addons<br>然后将Mod文件(一般以.vpk结尾)拖入这个文件夹重启游戏就可以加载Mod了</p>
+<h2 id="通过官方的创意工坊进行Mod安装"><a href="#通过官方的创意工坊进行Mod安装" class="headerlink" title="通过官方的创意工坊进行Mod安装"></a>通过官方的创意工坊进行Mod安装</h2><p>这个安装的方法估计只有正版能有了吧</p>
+<h3 id="安装方法-1"><a href="#安装方法-1" class="headerlink" title="安装方法"></a>安装方法</h3><p>1.进入<a href="http://steamcommunity.com/app/550/workshop/" target="_blank" rel="noopener">l4d2的创意工坊</a><br>2.查找你所需要的mod.<br>3.进入mod页面, 点击订阅, 打开游戏便会自动下载安装</p>
+]]></content>
+      
+        <categories>
+            
+            <category> Game </category>
+            
+        </categories>
+        
+        
+        <tags>
+            
+            <tag> Game </tag>
+            
+            <tag> Left 4 Dead 2 </tag>
+            
+        </tags>
+        
+    </entry>
+    
+    <entry>
+      <title><![CDATA[OpenVPN食用方法]]></title>
+      <url>/2017/08/09/how-to-use-openvpn/</url>
+      <content type="html"><![CDATA[<blockquote>
+<p>OpenVPN什么的应该是我的VPN食用方法的第二弹了吧Orz</p>
+</blockquote>
+<a id="more"></a>
+<h2 id="安卓"><a href="#安卓" class="headerlink" title="安卓"></a>安卓</h2><h3 id="安装客户端"><a href="#安装客户端" class="headerlink" title="安装客户端"></a>安装客户端</h3><p><a href="https://ftp.iinde.xyz/Applications/OpenVPN-1.0.7-zh-CN.apk" target="_blank" rel="noopener">汉化客户端</a><br><a href="https://ftp.iinde.xyz/Applications/OpenVPN-1.0.7-en-US.apk" target="_blank" rel="noopener">原版客户端</a></p>
+<h3 id="下载配置文件"><a href="#下载配置文件" class="headerlink" title="下载配置文件"></a>下载配置文件</h3><p>如果使用Evplex已经提供了配置文件下载,<br>如果你的服务商没有提供配置文件,请自行参考百度进行配置文件的编写</p>
+<p>###通过菜单导入配置文件<br>导入 &gt; 从SD卡导入来进行导入<br><img src="https://publish.indexyz.me/images/2016/06/2384172290.png?imageView2/2/w/300" alt="Screenshot_20160617-211458.png"></p>
+<p><img src="https://publish.indexyz.me/images/2016/06/4214865866.png?imageView2/2/w/300" alt="Screenshot_20160617-211500.png"></p>
+<p>###使用QQ发送配置文件<br>将配置文件使用QQ发送到手机<br><img src="https://publish.indexyz.me/images/2016/06/3848708350.png?imageView2/2/w/300" alt="QQ-1.png"></p>
+<p>然后再使用手机打开 &gt; 通过其他应用打开<br><img src="https://publish.indexyz.me/images/2016/06/3783479544.png?imageView2/2/w/300" alt="QQ图片20160617212147.png"></p>
+<p><img src="https://publish.indexyz.me/images/2016/06/760227249.png?imageView2/2/w/300" alt="QQ图片20160617212149.png"></p>
+<h3 id="链接服务器"><a href="#链接服务器" class="headerlink" title="链接服务器"></a>链接服务器</h3><p>接受配置文件导入<br><img src="https://publish.indexyz.me/images/2016/06/2798648429.png?imageView2/2/w/300" alt="QQ图片20160617212155.png"></p>
+<p>然后输入自己的用户名和密码链接</p>
+<p>如果出现证书文件导入,继续就好<br><img src="https://publish.indexyz.me/images/2016/06/1400159461.png?imageView2/2/w/300" alt="QQ图片20160617212443.png"></p>
+<p>如果遇到未知OpenVPN错误,稍等就可以了</p>
+<p>Enjoy it!<br><img src="https://publish.indexyz.me/images/2016/06/3012130306.png?imageView2/2/w/300" alt="QQ图片20160617212723.png"></p>
+]]></content>
+      
+        <categories>
+            
+            <category> Usage </category>
+            
+        </categories>
+        
+        
+        <tags>
+            
+            <tag> Usage </tag>
+            
+            <tag> Proxy </tag>
+            
+            <tag> OpenVPN </tag>
+            
+        </tags>
+        
+    </entry>
+    
+    <entry>
+      <title><![CDATA[关于OpenVPN的用户认证的研究]]></title>
+      <url>/2017/08/09/openvpn-auth-system/</url>
+      <content type="html"><![CDATA[<blockquote>
+<p>最近在研究OpenVPN<br> 然后想把自己的Evplex和ss-panel接入OpenVPN认证，于是就开始研究了</p>
+</blockquote>
+<a id="more"></a>
+<h2 id="1-etc-server-conf"><a href="#1-etc-server-conf" class="headerlink" title="1. /etc/server.conf"></a>1. /etc/server.conf</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 添加下列行 会调用verify.sh进行认证并且不要求CA证书</span></span><br><span class="line">auth-user-pass-verify ./verify.sh via-env</span><br><span class="line">client-cert-not-required</span><br><span class="line">username-as-common-name</span><br><span class="line"></span><br><span class="line"><span class="comment"># 添加下列行会调用connect和disconnect进行对链接的传入和传出进行控制</span></span><br><span class="line">script-security 3 system</span><br><span class="line">client-connect ./connect.sh</span><br><span class="line">client-disconnect ./disconnect.sh</span><br></pre></td></tr></table></figure>
+<h3 id="对disconnect-sh和connect-sh-的参数解释"><a href="#对disconnect-sh和connect-sh-的参数解释" class="headerlink" title="对disconnect.sh和connect.sh 的参数解释"></a>对disconnect.sh和connect.sh 的参数解释</h3><table>
+<thead>
+<tr>
+<th>Value Name</th>
+<th style="text-align:right">Mean</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>$bytes_received</td>
+<td style="text-align:right">收到的流量</td>
+</tr>
+<tr>
+<td>$bytes_sent</td>
+<td style="text-align:right">发送的流量</td>
+</tr>
+<tr>
+<td>$trusted_ip</td>
+<td style="text-align:right">链接的IP</td>
+</tr>
+<tr>
+<td>$trusted_port</td>
+<td style="text-align:right">链接的端口</td>
+</tr>
+<tr>
+<td>$ifconfig_pool_remote_ip</td>
+<td style="text-align:right">链接者的IP</td>
+</tr>
+<tr>
+<td>$common_name</td>
+<td style="text-align:right">用户名</td>
+</tr>
+</tbody>
+</table>
+<h2 id="对面板的用户获取"><a href="#对面板的用户获取" class="headerlink" title="对面板的用户获取"></a>对面板的用户获取</h2><p>大家知道 ss-panel的V3有webapi, Evplex当然也有webapi<br>Evplex的WebApi是为了接入更多类型的节点和方便不使用mysql作为数据库的用户</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line">Main.py:</span><br><span class="line">---</span><br><span class="line"><span class="keyword">import</span> Config</span><br><span class="line"><span class="keyword">import</span> urllib</span><br><span class="line"><span class="keyword">import</span> json</span><br><span class="line"><span class="keyword">import</span> time</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">main</span><span class="params">()</span>:</span></span><br><span class="line">    API_obj  = urllib.urlopen(Config.API_URL + <span class="string">"users?key="</span> + Config.API_PASS)</span><br><span class="line"></span><br><span class="line">    API_json = json.load(API_obj)</span><br><span class="line">    user_list = []</span><br><span class="line">    <span class="keyword">if</span> API_json[<span class="string">"ret"</span>]:</span><br><span class="line">        <span class="keyword">for</span> item <span class="keyword">in</span> API_json[<span class="string">"data"</span>]:</span><br><span class="line">            <span class="keyword">if</span> item[<span class="string">"enable"</span>]:</span><br><span class="line">                user_list.append(item[<span class="string">"user_name"</span>] + <span class="string">" "</span> + item[<span class="string">"passwd"</span>])</span><br><span class="line">    <span class="keyword">with</span> open(Config.STOAGE_PATH, <span class="string">"w"</span>) <span class="keyword">as</span> file:</span><br><span class="line">        file.write(<span class="string">"\n"</span>.join(user_list))</span><br><span class="line">        </span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">"__main__"</span>:</span><br><span class="line">    <span class="keyword">while</span> <span class="keyword">True</span>:</span><br><span class="line">        main()</span><br><span class="line">        time.sleep(Config.RSYNC_TIME * <span class="number">60</span>)</span><br><span class="line">---</span><br><span class="line"></span><br><span class="line">Config.py</span><br><span class="line">---</span><br><span class="line">API_URL     = <span class="string">"http://127.0.0.1:8000/api/"</span></span><br><span class="line">API_PASS    = <span class="string">"Pleasechangeit"</span></span><br><span class="line"></span><br><span class="line">STOAGE_PATH = <span class="string">"users"</span></span><br><span class="line">RSYNC_TIME  = <span class="number">0.1</span>                       <span class="comment"># min</span></span><br><span class="line">---</span><br></pre></td></tr></table></figure>
+]]></content>
+      
+        <categories>
+            
+            <category> Linux </category>
+            
+        </categories>
+        
+        
+        <tags>
+            
+            <tag> Linux </tag>
+            
+            <tag> Python </tag>
+            
+            <tag> Proxy </tag>
+            
+            <tag> OpenVPN </tag>
+            
+        </tags>
+        
+    </entry>
+    
+    <entry>
+      <title><![CDATA[OpenVPN安装和面板的对接]]></title>
+      <url>/2017/08/09/how-to-install-openvpn/</url>
+      <content type="html"><![CDATA[<blockquote>
+<p>OpenVPN是一个用于创建虚拟专用网络加密通道的软件包，最早由James Yonan编写。OpenVPN允许创建的VPN使用公开密钥、电子证书、或者用户名／密码来进行身份验证。<br><a href="https://zh.wikipedia.org/wiki/OpenVPN" target="_blank" rel="noopener">Wikipedia</a></p>
+</blockquote>
+<p>话说看到了<a href="http://www.wooyun.org/bugs/wooyun-2015-0165733" target="_blank" rel="noopener">乌云</a>上一个关于OpenVPN免流的Bug,同时最近在写<a href="http://www.evplex.xyz" target="_blank" rel="noopener">Project<br>Evplex</a>,打算给他加上关于面板的对接和用户认证还有流量统计什么的.<br><a id="more"></a></p>
+<h2 id="安装OpenVPN"><a href="#安装OpenVPN" class="headerlink" title="安装OpenVPN"></a>安装OpenVPN</h2><p>修改网络支持转发<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 关闭SELinux</span></span><br><span class="line">setenforce 0</span><br><span class="line">vi /etc/sysctl.conf</span><br><span class="line"><span class="comment"># 修改参数 net.ipv4.ip_forward = 1 如果默认是空内容，请自行加上</span></span><br><span class="line">sysctl -p</span><br><span class="line"><span class="comment"># 修改防火墙参数</span></span><br><span class="line">iptables -t nat -A POSTROUTING -s 10.8.0.0/24 -o eth0 -j MASQUERADE</span><br><span class="line">iptables -A INPUT -p TCP --dport 443 -j ACCEPT</span><br><span class="line">iptables -A INPUT -p TCP --dport 8080 -j ACCEPT</span><br><span class="line">iptables -A INPUT -p TCP --dport 22 -j ACCEPT</span><br><span class="line">iptables -t nat -A POSTROUTING -j MASQUERADE</span><br><span class="line">iptables -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT</span><br><span class="line">service iptables save</span><br><span class="line">service iptables restart</span><br></pre></td></tr></table></figure></p>
+<p>###安装本体<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">yum install epel-release -y</span><br><span class="line">yum update -y</span><br><span class="line"><span class="comment"># 安装依赖</span></span><br><span class="line">yum install -y wget openssl openssl-devel lzo lzo-devel pam pam-devel automake </span><br><span class="line">pkgconfig</span><br><span class="line">yum install -y openvpn</span><br><span class="line">cp /usr/share/doc/openvpn-*/sample/sample-config-files/server.conf  /etc/openvpn</span><br><span class="line"></span><br><span class="line"><span class="comment"># 安装EasyRSA</span></span><br><span class="line">wget --no-check-certificate https://ftp.iinde.xyz/Useful/openvpn/EasyRSA.tar.gz</span><br><span class="line">tar zxvf EasyRSA.tar.gz -C /etc/openvpn/</span><br><span class="line">rm -f EasyRSA.tar.gz</span><br><span class="line"><span class="built_in">cd</span> /etc/openvpn/EasyRsa/</span><br><span class="line"><span class="built_in">source</span> vars</span><br><span class="line">./clean-all</span><br><span class="line">./build-ca</span><br><span class="line">./build-key-server server</span><br><span class="line"><span class="comment"># 实际上，对于用户名/密码认证机制来说，./build-key user01可以省略掉</span></span><br><span class="line">./build-key user01</span><br><span class="line">./build-dh</span><br><span class="line"><span class="built_in">cd</span> ..</span><br><span class="line">openvpn --genkey --secret static.key</span><br></pre></td></tr></table></figure></p>
+<p>###启动OpenVPN服务<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">service openvpn start</span><br></pre></td></tr></table></figure></p>
+<p>###配置文件例子<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">port 443</span><br><span class="line">proto tcp</span><br><span class="line">dev tun</span><br><span class="line">ca /etc/openvpn/EasyRsa/keys/ca.crt</span><br><span class="line">cert /etc/openvpn/EasyRsa/keys/server.crt</span><br><span class="line">key /etc/openvpn/EasyRsa/keys/server.key</span><br><span class="line">dh /etc/openvpn/EasyRsa/keys/dh2048.pem</span><br><span class="line">auth-user-pass-verify /etc/openvpn/verify.sh via-env</span><br><span class="line">client-cert-not-required</span><br><span class="line">username-as-common-name</span><br><span class="line">script-security 3 system</span><br><span class="line">server 10.8.0.0 255.255.255.0</span><br><span class="line">ifconfig-pool-persist /etc/openvpn/ipp.txt</span><br><span class="line">push &quot;redirect-gateway def1 bypass-dhcp&quot;</span><br><span class="line">push &quot;dhcp-option DNS 8.8.8.8&quot;</span><br><span class="line">push &quot;dhcp-option DNS 8.8.4.4&quot;</span><br><span class="line">keepalive 10 120 </span><br><span class="line">tls-auth /etc/openvpn/static.key 0  </span><br><span class="line">comp-lzo</span><br><span class="line">max-clients 12</span><br><span class="line">persist-key</span><br><span class="line">persist-tun</span><br><span class="line">log /etc/openvpn/openvpn.log</span><br><span class="line">log-append /etc/openvpn/openvpn.log</span><br><span class="line">verb 3</span><br></pre></td></tr></table></figure></p>
+<!--more-->
+<h2 id="免流部分"><a href="#免流部分" class="headerlink" title="免流部分"></a>免流部分</h2><h3 id="安装MProxy进行流量转发"><a href="#安装MProxy进行流量转发" class="headerlink" title="安装MProxy进行流量转发"></a>安装MProxy进行流量转发</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 自编译安装</span></span><br><span class="line">yum install git gcc -y</span><br><span class="line">git <span class="built_in">clone</span> https://github.com/Indexyz/mproxy.git mproxy</span><br><span class="line"><span class="built_in">cd</span> mproxy</span><br><span class="line">gcc -o mproxy mproxy.c</span><br><span class="line"><span class="comment"># mproxy/mroxy 就是生成的可执行文件了</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 当然 你也可以选择我已经编译过的文件</span></span><br><span class="line">curl -skSL -o mproxy https://ftp.iinde.xyz/Useful/openvpn/mproxy;chmod +x mproxy</span><br></pre></td></tr></table></figure>
+<h4 id="运行MProxy"><a href="#运行MProxy" class="headerlink" title="运行MProxy"></a>运行MProxy</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./mproxy -l 8080 -d</span><br></pre></td></tr></table></figure>
+<h3 id="安装Squid进行流量转发"><a href="#安装Squid进行流量转发" class="headerlink" title="安装Squid进行流量转发"></a>安装Squid进行流量转发</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cd</span> /etc/squid/</span><br><span class="line">rm -f ./squid.conf</span><br><span class="line">vi squid.conf</span><br><span class="line"><span class="comment"># 编辑你自己的配置文件</span></span><br><span class="line">chmod 0755 /etc/squid/squid.conf</span><br><span class="line">squid -z</span><br><span class="line">squid -s</span><br></pre></td></tr></table></figure>
+<p>配置文件例子<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">acl SSL_ports port 443</span><br><span class="line">acl Safe_ports port 80</span><br><span class="line">acl Safe_ports port 21</span><br><span class="line">acl Safe_ports port 443</span><br><span class="line">acl Safe_ports port 70</span><br><span class="line">acl Safe_ports port 210</span><br><span class="line">acl Safe_ports port 1025-65535</span><br><span class="line">acl Safe_ports port 280</span><br><span class="line">acl Safe_ports port 488</span><br><span class="line">acl Safe_ports port 591</span><br><span class="line">acl Safe_ports port 777</span><br><span class="line">acl CONNECT method CONNECT</span><br><span class="line">via on</span><br><span class="line">request_header_access X-Forwarded-For deny all</span><br><span class="line">request_header_access user-agent  deny all</span><br><span class="line">reply_header_access X-Forwarded-For deny all</span><br><span class="line">reply_header_access user-agent  deny all</span><br><span class="line">http_port 80</span><br><span class="line">http_access allow  all</span><br><span class="line">access_log /var/log/squid/access.log</span><br><span class="line">visible_hostname Indexyz Technology Inc.</span><br><span class="line">cache_mgr Incloud_Everythings</span><br></pre></td></tr></table></figure></p>
+<h2 id="OpenVPN-配置文件"><a href="#OpenVPN-配置文件" class="headerlink" title="OpenVPN 配置文件"></a>OpenVPN 配置文件</h2><h3 id="使用MProxy的例子"><a href="#使用MProxy的例子" class="headerlink" title="使用MProxy的例子"></a>使用MProxy的例子</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line">setenv IV_GUI_VER &quot;de.blinkt.openvpn 0.6.17&quot; </span><br><span class="line">machine-readable-output</span><br><span class="line">client</span><br><span class="line">dev tun</span><br><span class="line">proto tcp</span><br><span class="line">connect-retry-max 5</span><br><span class="line">connect-retry 5</span><br><span class="line">resolv-retry 60</span><br><span class="line">remote wap.10086.cn 80</span><br><span class="line">http-proxy-retry</span><br><span class="line">http-proxy-option EXT1 POST http://wap.10086.cn</span><br><span class="line">http-proxy-option EXT1 Host wap.10086.cn</span><br><span class="line">http-proxy-option EXT1 Host: wap.10086.cn / HTTP/1.1</span><br><span class="line">http-proxy-option EXT1 CONNECT</span><br><span class="line">http-proxy &#123;your server ip&#125; 8080</span><br><span class="line"></span><br><span class="line">resolv-retry infinite</span><br><span class="line">nobind</span><br><span class="line">persist-key</span><br><span class="line">persist-tun</span><br><span class="line">push route 114.114.114.114 114.114.115.115</span><br><span class="line"></span><br><span class="line">&lt;ca&gt;</span><br><span class="line">Enter Your CA here</span><br><span class="line">&lt;/ca&gt;</span><br><span class="line">key-direction 1</span><br><span class="line">&lt;tls-auth&gt;</span><br><span class="line">Enter your static key here</span><br><span class="line">&lt;/tls-auth&gt;</span><br><span class="line">auth-user-pass</span><br><span class="line">ns-cert-type server</span><br><span class="line">comp-lzo</span><br><span class="line">verb 3</span><br></pre></td></tr></table></figure>
+<h3 id="使用Squid的例子"><a href="#使用Squid的例子" class="headerlink" title="使用Squid的例子"></a>使用Squid的例子</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line">setenv IV_GUI_VER &quot;de.blinkt.openvpn 0.6.17&quot; </span><br><span class="line">machine-readable-output</span><br><span class="line">client</span><br><span class="line">dev tun</span><br><span class="line">connect-retry-max 5</span><br><span class="line">connect-retry 5</span><br><span class="line">resolv-retry 60</span><br><span class="line">http-proxy-option EXT1 &quot;POST http://rd.go.10086.cn&quot; </span><br><span class="line">http-proxy-option EXT1 &quot;GET http://rd.go.10086.cn&quot; </span><br><span class="line">http-proxy-option EXT1 &quot;X-Online-Host: rd.go.10086.cn&quot; </span><br><span class="line">http-proxy-option EXT1 &quot;POST http://rd.go.10086.cn&quot; </span><br><span class="line">http-proxy-option EXT1 &quot;X-Online-Host: rd.go.10086.cn&quot; </span><br><span class="line">http-proxy-option EXT1 &quot;POST http://rd.go.10086.cn&quot; </span><br><span class="line">http-proxy-option EXT1 &quot;Host: rd.go.10086.cn&quot; </span><br><span class="line">http-proxy-option EXT1 &quot;GET http://rd.go.10086.cn&quot; </span><br><span class="line">http-proxy-option EXT1 &quot;Host: rd.go.10086.cn&quot;</span><br><span class="line">http-proxy &#123;your server ip&#125; 80</span><br><span class="line"></span><br><span class="line">remote &#123;your server ip&#125; &#123;your server port&#125; tcp-client</span><br><span class="line">resolv-retry infinite</span><br><span class="line">nobind</span><br><span class="line">persist-key</span><br><span class="line">persist-tun</span><br><span class="line">push route 114.114.114.114 114.114.115.115</span><br><span class="line"></span><br><span class="line">&lt;ca&gt;</span><br><span class="line">Enter your CA here</span><br><span class="line">&lt;/ca&gt;</span><br><span class="line">key-direction 1</span><br><span class="line">&lt;tls-auth&gt;</span><br><span class="line">Enter your static key here</span><br><span class="line">&lt;/tls-auth&gt;</span><br><span class="line">auth-user-pass</span><br><span class="line">ns-cert-type server</span><br><span class="line">comp-lzo</span><br><span class="line">verb 3</span><br></pre></td></tr></table></figure>
+<h2 id="用户认证和面板对接"><a href="#用户认证和面板对接" class="headerlink" title="用户认证和面板对接"></a>用户认证和面板对接</h2><p>详见<a href="https://blog.iinde.xyz/index.php/archives/33/" target="_blank" rel="noopener">这里</a></p>
+]]></content>
+      
+        <categories>
+            
+            <category> Linux </category>
+            
+        </categories>
+        
+        
+        <tags>
+            
+            <tag> Linux </tag>
+            
+            <tag> Proxy </tag>
+            
+            <tag> OpenVPN </tag>
+            
+        </tags>
+        
+    </entry>
+    
+    <entry>
+      <title><![CDATA[在Linux上安装TsunamiUDP进行快速传输]]></title>
+      <url>/2017/08/09/how-to-install-tsunamiudp/</url>
+      <content type="html"><![CDATA[<blockquote>
+<p>TsunamiUDP 是一个专为网络加速诞生的小工具。<br>思路很简单，使用TCP进行传输控制、UDP进行数据传输。</p>
+</blockquote>
+<a id="more"></a>
+<h1 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h1><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 安装依赖</span></span><br><span class="line">yum install autoconf automake gcc unzip</span><br><span class="line"><span class="comment"># 下载源代码编译</span></span><br><span class="line">wget https://github.com/cheetahmobile/tsunami-udp/archive/1.8.1.zip</span><br><span class="line">unzip 1.8.1.zip</span><br><span class="line"><span class="built_in">cd</span> tsunami-udp-1.8.1</span><br><span class="line">./recompile.sh</span><br><span class="line">make install</span><br></pre></td></tr></table></figure>
+<h1 id="开启输出服务器"><a href="#开启输出服务器" class="headerlink" title="开启输出服务器"></a>开启输出服务器</h1><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cd</span> /data</span><br><span class="line">tsunamid *</span><br></pre></td></tr></table></figure>
+<h1 id="链接服务器获取数据"><a href="#链接服务器获取数据" class="headerlink" title="链接服务器获取数据"></a>链接服务器获取数据</h1><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cd</span> / data</span><br><span class="line">tsunami</span><br><span class="line">&gt; connect &#123;serverip&#125;</span><br><span class="line">Connected.</span><br><span class="line">&gt; get *</span><br></pre></td></tr></table></figure>
+<p>晒一张德国服务器和美国服务器互传的速度截图<br><img src="https://publish.indexyz.me/images/2016/05/2418556794.png" alt="速度截图"></p>
+]]></content>
+      
+        <categories>
+            
+            <category> Linux </category>
+            
+        </categories>
+        
+        
+        <tags>
+            
+            <tag> Linux </tag>
+            
+            <tag> Transfer File </tag>
+            
+        </tags>
+        
+    </entry>
+    
+    <entry>
+      <title><![CDATA[Shadowsocks的正确食用方法]]></title>
+      <url>/2017/08/09/how-to-use-shadowsocks/</url>
+      <content type="html"><![CDATA[<blockquote>
+<p>最近开了一个ShadowSocks的服务器，然而发现很多的童鞋都不会用SS科学上网<br>  我只能说:”Naive!”</p>
+</blockquote>
+<a id="more"></a>
+<h2 id="ShadowSocks简介"><a href="#ShadowSocks简介" class="headerlink" title="ShadowSocks简介"></a>ShadowSocks简介</h2><blockquote>
+<p>Shadowsocks（中文名称：影梭）是使用Python等语言开发的、基于Apache许可证开源的代理<br>软件。Shadowsocks使用socks5代理，用于保护网络流量。在中国大陆被广泛用于突破防火长城（GFW），以浏览被封锁的内容。<br>From <a href="https://zh.wikipedia.org/wiki/Shadowsocks" target="_blank" rel="noopener">Wikipedia</a></p>
+</blockquote>
+<p>那么问题来了，我们要怎么使用SS进行科学上网呢</p>
+<h1 id="使用ShadowSocks科学上网"><a href="#使用ShadowSocks科学上网" class="headerlink" title="使用ShadowSocks科学上网"></a>使用ShadowSocks科学上网</h1><h2 id="获取软件"><a href="#获取软件" class="headerlink" title="获取软件"></a>获取软件</h2><p>首先，这是一个开源项目，托管在GitHub上,因此我们可以很方便的进行获取源代码和协助开发</p>
+<blockquote>
+<p>Tips:<br>  ShadowSocks的作者曾经被请去喝茶，所以我们现在看到的主分支是rm,只要切换到master就好了</p>
+</blockquote>
+<p>Windows的项目: <a href="https://github.com/shadowsocks/shadowsocks-windows/" target="_blank" rel="noopener">Widnows</a><br>Android的项目: <a href="https://github.com/shadowsocks/shadowsocks-android" target="_blank" rel="noopener">Android</a><br>IOS的项目: <a href="https://github.com/shadowsocks/shadowsocks-iOS" target="_blank" rel="noopener">IOS</a></p>
+<p>单击项目上的Release,可以找到最新的构建版本，我们就可以用它来进行我们的科学上网了,当然,你也可以自己下载master分支的源代码进行构建</p>
+<hr>
+<h2 id="Android"><a href="#Android" class="headerlink" title="Android"></a>Android</h2><p>可以通过扫描二维码来快速添加服务器</p>
+<p><img src="https://publish.indexyz.me/images/2016/05/3648777761.png" alt="Android 2code.png"></p>
+<p>然后返回到主界面 就可以链接服务器了, Android 自身会报警,同意就可以了<br><img src="https://publish.indexyz.me/images/2016/05/3417398088.png" alt="Android warn.png"></p>
+<p>然后就可以畅享自由的互联网了<br><img src="https://publish.indexyz.me/images/2016/05/2121727418.png" alt="Android done.png"></p>
+<hr>
+<h2 id="Windows"><a href="#Windows" class="headerlink" title="Windows"></a>Windows</h2><h3 id="链接服务器"><a href="#链接服务器" class="headerlink" title="链接服务器"></a>链接服务器</h3><p>获取你自己Shadow的账号和密码<br>如果你的服务器有提供二维码进行输入的话<br>可以通过状态栏,服务器,扫描二维码来进行扫描<img src="https://publish.indexyz.me/images/2016/05/3908564421.png" alt="Use2Code.png"></p>
+<p>这时候,你的SS已经链接到服务器了, 但是我们还需要使用一个客户端,<br>链接到SS上，进行科学上网</p>
+<h4 id="方法一-使用全局PAC"><a href="#方法一-使用全局PAC" class="headerlink" title="方法一:使用全局PAC"></a>方法一:使用全局PAC</h4><p>ShadowSocks自带了从GFW List获取PAC的方法<br>只需要在状态栏图标右键,PAC,从GFWList更新本地PAC就可以了<br><img src="https://publish.indexyz.me/images/2016/05/4276940742.png" alt="Get PAC.png"></p>
+<p>这时候默认的IE浏览器就可以访问自由的互联网了</p>
+<h5 id="高级篇——自定义PAC"><a href="#高级篇——自定义PAC" class="headerlink" title="高级篇——自定义PAC"></a>高级篇——自定义PAC</h5><p>待填坑</p>
+<h4 id="方法二-使用浏览器插件"><a href="#方法二-使用浏览器插件" class="headerlink" title="方法二:使用浏览器插件"></a>方法二:使用浏览器插件</h4><h5 id="Chrome"><a href="#Chrome" class="headerlink" title="Chrome"></a>Chrome</h5><p>安装插件 Proxy SwitchyOmega: <a href="https://chrome.google.com/webstore/detail/proxy-switchyomega/padekgcemlokbadohgkifijomclgjgif?hl=zh-CN" target="_blank" rel="noopener">谷歌商店地址</a>  <a href="https://github.com/FelisCatus/SwitchyOmega" target="_blank" rel="noopener">GitHub</a><br><img src="https://publish.indexyz.me/images/2016/05/2218849068.png" alt="Chrome Proxy SwirchOmega.png"></p>
+<p>然后打开拓展的配置页<br>添加一个规则, 这里叫做ShadowSocks<br><img src="https://publish.indexyz.me/images/2016/05/1619808061.png" alt="NewProxy.png"></p>
+<p>修改它为本地的代理服务器<br><img src="https://publish.indexyz.me/images/2016/05/2403373922.png" alt="RulesDeteil.png"></p>
+<p>然后点击任务栏图标, 单击刚刚添加的规则就可以科学上网了<br><img src="https://publish.indexyz.me/images/2016/05/2696533201.png" alt="Rules.png"></p>
+<h4 id="FireFox篇"><a href="#FireFox篇" class="headerlink" title="FireFox篇"></a>FireFox篇</h4><p>安装附加组件<a href="https://addons.mozilla.org/zh-CN/firefox/addon/autoproxy/" target="_blank" rel="noopener">AutoProxy</a><br><img src="https://publish.indexyz.me/images/2016/05/1376335465.png" alt="Install AutoProxy.png"></p>
+<p>然后打开附加组件的控制GUI(重启后)<br>添加代理服务器<br><img src="https://publish.indexyz.me/images/2016/05/1196130009.png" alt="Edit1.png"></p>
+<p>端口填入本地端口<br><img src="https://publish.indexyz.me/images/2016/05/3351527960.png" alt="Edit2.png"></p>
+<p>现在选择全局代理模式就可以跨越防火长城了<br><img src="https://publish.indexyz.me/images/2016/05/772997332.png" alt="Firefox all proxy.png"></p>
+]]></content>
+      
+        <categories>
+            
+            <category> Usage </category>
+            
+        </categories>
+        
+        
+        <tags>
+            
+            <tag> Usage </tag>
+            
+            <tag> Shadowsocks </tag>
+            
+        </tags>
+        
+    </entry>
+    
+    <entry>
+      <title><![CDATA[更新CentOS6上的Git版本]]></title>
+      <url>/2017/08/09/upgrade-git-on-centos/</url>
+      <content type="html"><![CDATA[<p>最近在玩ss-panel, 在编译Go版本的ss的时候出现编译一直卡死的情况<br>查找资料后发现是Git的版本太低了(Git要高于1.7.1)</p>
+<a id="more"></a>
+<p>然而CentOS里最新的Git确实<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#git --version</span></span><br><span class="line">git version 1.7.1</span><br></pre></td></tr></table></figure></p>
+<p>真是史前版本<img src="https://publish.indexyz.me/images/2016/05/1334795755.png" alt="喷"></p>
+<p>于是我们需要更新Git到新版本</p>
+<!--more-->
+<h2 id="方法一-采用第三方的yum源来更新Git"><a href="#方法一-采用第三方的yum源来更新Git" class="headerlink" title="方法一(采用第三方的yum源来更新Git)"></a>方法一(采用第三方的yum源来更新Git)</h2><ol>
+<li><p>下载repo， -o 也就是 –output-file， 把下面链接下载的放到某位置上</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">wget -O /etc/yum.repos.d/PUIAS_6_computational.repo </span><br><span class="line">https://gitlab.com/gitlab-org/gitlab- </span><br><span class="line">recipes/raw/master/install/centos/PUIAS_6_computational.repo</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>下载GPG KEY</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">wget -O /etc/pki/rpm-gpg/RPM-GPG-KEY-puias </span><br><span class="line">http://springdale.math.ias.edu/data/puias/6/x86_64/os/RPM-GPG-KEY-puias &amp;&amp; rpm </span><br><span class="line">--import /etc/pki/rpm-gpg/RPM-GPG-KEY-puias</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>验证key是否安装成功</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">rpm -qa gpg*</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>验证yum是否正常</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yum repolist</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>更新Git</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yum update git</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<h2 id="方法二-构建最新的版本"><a href="#方法二-构建最新的版本" class="headerlink" title="方法二(构建最新的版本)"></a>方法二(构建最新的版本)</h2><p>最近的版本可以在GitHub上找到 <a href="https://github.com/git/git/" target="_blank" rel="noopener">GitHub-Git</a><br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 安装依赖</span></span><br><span class="line">yum install curl-devel expat-devel gettext-devel openssl-devel zlib-devel </span><br><span class="line">perl-devel</span><br><span class="line"><span class="comment"># 下载源代码</span></span><br><span class="line">wget https://github.com/git/git/archive/v2.8.2.tar.gz</span><br><span class="line">tar zxvf v2.8.2.tar.gz</span><br><span class="line"><span class="built_in">cd</span> git-2.8.2/</span><br><span class="line">make prefix=/usr/<span class="built_in">local</span> install</span><br></pre></td></tr></table></figure></p>
+<p>然后就安装了最新的Git了<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># git --version</span></span><br><span class="line">git version 2.8.2</span><br></pre></td></tr></table></figure></p>
+]]></content>
+      
+        <categories>
+            
+            <category> Linux </category>
+            
+        </categories>
+        
+        
+        <tags>
+            
+            <tag> Linux </tag>
+            
+            <tag> Git </tag>
+            
+        </tags>
+        
+    </entry>
+    
+    <entry>
+      <title><![CDATA[CentOS编译安装Python]]></title>
+      <url>/2017/08/09/build-python-on-centos/</url>
+      <content type="html"><![CDATA[<p>在CentOS6上，默认安装的Python版本是2.6，然而有些软件需要使用Python2.7</p>
+<a id="more"></a>
+<p>于是只能手动编译升级Python版本</p>
+<ol>
+<li><p>安装依赖</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yum install -y gcc openssl-devel</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>下载源码包并且编译安装</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">wget https://www.python.org/ftp/python/2.7.11/Python-2.7.11.tgz</span><br><span class="line">tar xvf Python-2.7.11.tgz</span><br><span class="line">cd Python-2.7.11</span><br><span class="line">./configure --prefix=/usr/local/python27</span><br><span class="line">make</span><br><span class="line">make install</span><br><span class="line"><span class="meta">#</span><span class="bash"> 这时候旧的Python还存在，需要移动或者删除掉</span></span><br><span class="line">rm /usr/bin/python</span><br><span class="line">ln -s /usr/local/python27/bin/python /usr/bin/python</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>解决yum等软件的问题</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> CentOS6的yum是不支持Python2.7的，我们需要手动切换到Python2.6</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> 编辑/usr/bin/yum</span></span><br><span class="line">vim /usr/bin/yum</span><br><span class="line"><span class="meta">#</span><span class="bash"> 将头部的</span></span><br><span class="line"><span class="meta">#</span><span class="bash">!/usr/bin/python</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> 改为</span></span><br><span class="line"><span class="meta">#</span><span class="bash">!/usr/bin/python2.6</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>安装pip和easy_install</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">wget https://bootstrap.pypa.io/get-pip.py</span><br><span class="line">python get-pip.py</span><br></pre></td></tr></table></figure></li>
+</ol>
+]]></content>
+      
+        <categories>
+            
+            <category> Linux </category>
+            
+        </categories>
+        
+        
+        <tags>
+            
+            <tag> Linux </tag>
+            
+            <tag> CentOS </tag>
+            
+            <tag> Python </tag>
+            
+        </tags>
+        
+    </entry>
+    
+    <entry>
+      <title><![CDATA[从WordPress迁移到了Typecho]]></title>
+      <url>/2017/08/09/transfer-wordpress-to-typecho/</url>
+      <content type="html"><![CDATA[<blockquote>
+<p>渣渣WordPress         </p>
+</blockquote>
+<a id="more"></a>                                
+<blockquote>
+<p></p><p style="text-align:right">–Indexyz </p><p></p>
+</blockquote>
+<p>然而这并不能算迁移，因为任何数据都没有保留<img src="https://publish.indexyz.me/images/2016/03/3756851667.jpg" alt="无奈"></p>
+<p>打算这个Blog写写什么黑科技什么的吧2333<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> item <span class="keyword">in</span> xrange(<span class="number">100</span>):</span><br><span class="line">    <span class="keyword">print</span> <span class="string">"Hello,World!"</span></span><br></pre></td></tr></table></figure></p>
+]]></content>
+      
+        <categories>
+            
+            <category> Blog </category>
+            
+        </categories>
+        
+        
+        <tags>
+            
+            <tag> Blog </tag>
+            
+        </tags>
+        
+    </entry>
+    
+    <entry>
+      <title><![CDATA[再见2015, 你好2016]]></title>
+      <url>/2017/08/09/goodbay-2015-hello-2016/</url>
+      <content type="html"><![CDATA[<p>发个贴证明我没死</p>
+]]></content>
+      
+        <categories>
+            
+            <category> Life </category>
+            
+        </categories>
+        
+        
+        <tags>
+            
+            <tag> Life </tag>
+            
+        </tags>
+        
+    </entry>
+    
+    <entry>
+      <title><![CDATA[欢迎使用 Typecho]]></title>
+      <url>/2017/08/09/hello-typecho/</url>
+      <content type="html"><![CDATA[<p>如果您看到这篇文章,表示您的 blog 已经安装成功.</p>
+]]></content>
+      
+        <categories>
+            
+            <category> Blog </category>
+            
+        </categories>
+        
+        
+        <tags>
+            
+            <tag> Blog </tag>
+            
+        </tags>
+        
+    </entry>
+    
+    <entry>
+      <title><![CDATA[Welcome to Ghost]]></title>
+      <url>/2017/08/09/welcome-to-ghost/</url>
+      <content type="html"><![CDATA[<h1 id="我叕换博客系统了"><a href="#我叕换博客系统了" class="headerlink" title="我叕换博客系统了"></a>我叕换博客系统了</h1><a id="more"></a>
+<p>这次把他换到了<code>Ghost</code> 发现不能搞可视化的编辑器什么的不习惯 而且GitHub当博客反正还是要自己的服务器反向代理我才能有Https的小绿锁 那么索性直接换成Ghost</p>
+<p>这次打算有空自己写点主题? 不过我感觉默认的主题够我用了 233</p>
+]]></content>
+      
+        <categories>
+            
+            <category> Blog </category>
+            
+        </categories>
+        
+        
+        <tags>
+            
+            <tag> Blog </tag>
+            
+        </tags>
+        
+    </entry>
+    
+  
+  
+    
+    <entry>
+      <title><![CDATA[友情链接]]></title>
+      <url>/links.html</url>
+      <content type="html"></content>
+    </entry>
+    
+  
+</search>
